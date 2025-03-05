@@ -171,7 +171,7 @@ protected:
      */
     void grow();
 
-    // TODO
+    // TO DO
     // Give a representation.
     // Hint: use std::shared_ptr<T[]> to manage the block of allocated memory.
 
