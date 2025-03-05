@@ -171,11 +171,9 @@ protected:
      */
     void grow();
 
-    // TO DO
-    // Give a representation.
-    // Hint: use std::shared_ptr<T[]> to manage the block of allocated memory.
-
-    //
+    std::shared_ptr<T[]> data_;
+    size_t capacity_;
+    size_t size_;
 };
 
 #include <cdarray_imp.hpp>

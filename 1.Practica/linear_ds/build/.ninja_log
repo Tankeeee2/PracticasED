@@ -1,0 +1,17 @@
+# ninja log v6
+3	586	1741208402026542852	CMakeFiles/test_queue.dir/test_queue.cpp.o	4ab5cf1229cb9271
+938	1165	1741208402966542367	test_iterator	105b9bd6ee91a961
+2	592	1741208402026542852	CMakeFiles/test_stack.dir/test_stack.cpp.o	9665cc625fb6c6da
+3	732	1741208402026542852	CMakeFiles/test_cdarray.dir/test_cdarray.cpp.o	b1143c2bd31d2b88
+592	818	1741208402616542547	test_stack	9de7bd05523cb914
+1	915	1741208402026542852	CMakeFiles/test_dnode.dir/test_list.cpp.o	da01b7dabcb860fc
+587	835	1741208402616542547	test_queue	d466ffde9b03a39d
+732	1001	1741208402756542474	test_cdarray	efb77e42f05a7d26
+915	1132	1741208402946542376	test_dnode	766fe436e8cdfeb6
+1	901	1741208402026542852	CMakeFiles/test_list.dir/test_list.cpp.o	963eab403bf1504a
+901	1142	1741208402926542387	test_list	5eb55f495fe7d6b8
+2	937	1741208402026542852	CMakeFiles/test_iterator.dir/test_list.cpp.o	99af4843fc9d5443
+2	429	1741209341566036512	CMakeFiles/test_queue.dir/test_queue.cpp.o	4ab5cf1229cb9271
+1	524	1741209341566036512	CMakeFiles/test_cdarray.dir/test_cdarray.cpp.o	b1143c2bd31d2b88
+429	601	1741209341986036287	test_queue	d466ffde9b03a39d
+524	688	1741209342086036233	test_cdarray	efb77e42f05a7d26

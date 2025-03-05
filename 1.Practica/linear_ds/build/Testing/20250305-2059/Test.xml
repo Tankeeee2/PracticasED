@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="(empty)"
+	BuildStamp="20250305-2059-Experimental"
+	Name="(empty)"
+	Generator="ctest-3.30.5"
+	CompilerName=""
+	CompilerVersion=""
+	OSName="Linux"
+	Hostname="Laptop"
+	OSRelease="5.15.167.4-microsoft-standard-WSL2"
+	OSVersion="#1 SMP Tue Nov 5 00:21:55 UTC 2024"
+	OSPlatform="x86_64"
+	Is64Bits="1"
+	VendorString="AuthenticAMD"
+	VendorID="Advanced Micro Devices"
+	FamilyID="23"
+	ModelID="104"
+	ProcessorCacheSize="512"
+	NumberOfLogicalCPU="16"
+	NumberOfPhysicalCPU="8"
+	TotalVirtualMemory="3072"
+	TotalPhysicalMemory="8862"
+	LogicalProcessorsPerPhysical="2"
+	ProcessorClockFrequency="1796.57"
+	>
+	<Testing>
+		<StartDateTime>Mar 05 22:15 CET</StartDateTime>
+		<StartTestTime>1741209347</StartTestTime>
+		<TestList>
+			<Test>/home/juanjo/ED/1.Practica/linear_ds/TestStack</Test>
+		</TestList>
+		<Test Status="failed">
+			<Name>TestStack</Name>
+			<Path>/home/juanjo/ED/1.Practica/linear_ds</Path>
+			<FullName>/home/juanjo/ED/1.Practica/linear_ds/TestStack</FullName>
+			<FullCommandLine>/usr/bin/python3 "run_tests.py" "/home/juanjo/ED/1.Practica/linear_ds/build//test_stack" "11_tests_stack"</FullCommandLine>
+			<Results>
+				<NamedMeasurement type="text/string" name="Exit Code">
+					<Value>Failed</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Exit Value">
+					<Value>1</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="numeric/double" name="Execution Time">
+					<Value>0.090314</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="numeric/double" name="Processors">
+					<Value>1</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Completion Status">
+					<Value>Completed</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Command Line">
+					<Value>/usr/bin/python3 "run_tests.py" "/home/juanjo/ED/1.Practica/linear_ds/build//test_stack" "11_tests_stack"</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Environment">
+					<Value>#CTEST_RESOURCE_GROUP_COUNT=</Value>
+				</NamedMeasurement>
+				<Measurement>
+					<Value encoding="base64" compression="gzip">eJzdjz1PwzAYhPf8hS630Q7YcYsYrBYJCTYGBm8RClbytnlL/SHbFeLf12l3dthOp3t0egzlgnT2nv1BQ6m+1CL3udjhS7YthBBYdBvlzDzcs+c80YhvLhMopZAwhJFw/7joWtfM8I3VkFNwJI9n649Bvr5IJd6THQoPVp7Yk039mGuqALsophj1+kHjrRZb86T1HJYrdNcngx3Ylw+N55wpFQ4en5x7crH8LFd32Fs+0Siaxvzqo/6Zz/rP+bRyg6sCoq3TWl0A6Y/Xjg==</Value>
+				</Measurement>
+			</Results>
+		</Test>
+		<EndDateTime>Mar 05 22:15 CET</EndDateTime>
+		<EndTestTime>1741209347</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>

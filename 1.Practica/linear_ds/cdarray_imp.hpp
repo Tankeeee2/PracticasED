@@ -12,49 +12,34 @@
 #include <cdarray.hpp>
 
 template <class T>
-size_t
-CDArray<T>::capacity() const
+size_t CDArray<T>::capacity() const
 {
-    // TODO: recode with respect to your representation.
-    return 0;
-    //
+    return capacity_;
 }
 
 template <class T>
-size_t
-CDArray<T>::size() const
+size_t CDArray<T>::size() const
 {
-    // TODO: recode with respect to your representation.
-    return 0;
-    //
+    return size_;
 }
 
 template <class T>
 bool CDArray<T>::is_empty() const
 {
-    // TODO: recode with respect to your representation.
-    return false;
-    //
+    return size_ == 0;
 }
 
 template <class T>
 bool CDArray<T>::is_full() const
 {
-    bool ret_v = false;
-    // TODO
-
-    //
-    assert(!ret_v || size() == capacity());
-    return ret_v;
+    return size_ == capacity_;
 }
 
 template <class T>
-CDArray<T>::CDArray(size_t cap)
+CDArray<T>::CDArray(size_t cap) : capacity_(cap), size_(0)
 {
     assert(cap > 0);
-    // TODO
-
-    //
+    data_ = std::shared_ptr<T[]>(new T[cap]);
     assert(capacity() == cap);
     assert(is_empty());
     assert(size() == 0);
@@ -63,63 +48,53 @@ CDArray<T>::CDArray(size_t cap)
 template <class T>
 CDArray<T>::~CDArray()
 {
-    // TODO
-    // Remember: depending on your representation, it is possible that nothing
-    // must be done.
-
-    //
+    // No need to do anything since we are using smart pointers
 }
 
 template <class T>
 CDArray<T>::CDArray(std::istream &in) noexcept(false) : CDArray(1)
 {
     std::string token;
-    in >> token;
-
-    // TODO
-    // Hint: use std::istringstream to convert from "string" to template
-    //  parameter T type.
-    // Remember: throw std::runtime_error("Wrong input format.") exception when an input
-    //  format error was found.
-
-    //
+    while (in >> token)
+    {
+        std::istringstream iss(token);
+        T value;
+        if (!(iss >> value))
+        {
+            throw std::runtime_error("Wrong input format.");
+        }
+        push_back(value);
+    }
 }
 
 template <class T>
-std::ostream &
-CDArray<T>::fold(std::ostream &out) const
+std::ostream &CDArray<T>::fold(std::ostream &out) const
 {
-    // TODO
-
-    //
+    for (size_t i = 0; i < size(); ++i)
+    {
+        out << get(i) << " ";
+    }
     return out;
 }
 
 template <class T>
 T const &CDArray<T>::get(size_t pos) const
 {
-    // TODO: recode with respect to your representation.
-    T fixme{};
-    return fixme;
-    //
+    assert(pos < size());
+    return data_[pos];
 }
 
 template <class T>
 void CDArray<T>::set(size_t pos, T const &new_v)
 {
-    // TODO
-
-    //
+    assert(pos < size());
+    data_[pos] = new_v;
     assert(new_v == get(pos));
 }
 
 size_t cInc(size_t v, size_t size)
 {
-    size_t ret_v;
-    // TODO
-
-    //
-    return ret_v;
+    return (v + 1) % size;
 }
 
 size_t cDec(size_t v, size_t size)
@@ -127,11 +102,7 @@ size_t cDec(size_t v, size_t size)
 #ifndef NDEBUG
     size_t old_v = v;
 #endif
-    size_t ret_v;
-    // TODO
-    // Remember: v is a unsigned value, so you must cast to signed before decrementing
-
-    //
+    size_t ret_v = (v == 0) ? size - 1 : v - 1;
     assert(old_v == cInc(ret_v, size));
     return ret_v;
 }
@@ -144,9 +115,16 @@ void CDArray<T>::push_front(T const &new_it)
     bool old_is_empty = is_empty();
     T old_front = is_empty() ? T() : get(0);
 #endif
-    // TODO
-
-    //
+    if (is_full())
+    {
+        grow();
+    }
+    for (size_t i = size(); i > 0; --i)
+    {
+        data_[i] = data_[i - 1];
+    }
+    data_[0] = new_it;
+    ++size_;
     assert(size() == old_size + 1);
     assert(get(0) == new_it);
     assert(old_is_empty || (get(1) == old_front));
@@ -160,9 +138,11 @@ void CDArray<T>::push_back(T const &new_it)
     bool old_is_empty = is_empty();
     T old_back = is_empty() ? T() : get(size() - 1);
 #endif
-    // TODO
-
-    //
+    if (is_full())
+    {
+        grow();
+    }
+    data_[size_++] = new_it;
     assert(size() == old_size + 1);
     assert(get(size() - 1) == new_it);
     assert(old_is_empty || (get(size() - 2) == old_back));
@@ -175,9 +155,12 @@ void CDArray<T>::pop_front()
     size_t old_size = size();
     T old_next_front = size() > 1 ? get(1) : T();
 #endif
-    // TODO
-
-    //
+    assert(!is_empty());
+    for (size_t i = 0; i < size() - 1; ++i)
+    {
+        data_[i] = data_[i + 1];
+    }
+    --size_;
     assert(size() == old_size - 1);
     assert(is_empty() || get(0) == old_next_front);
 }
@@ -189,9 +172,8 @@ void CDArray<T>::pop_back()
     size_t old_size = size();
     T old_prev_back = size() > 1 ? get(size() - 2) : T();
 #endif
-    // TODO
-
-    //
+    assert(!is_empty());
+    --size_;
     assert(size() == old_size - 1);
     assert(is_empty() || get(size() - 1) == old_prev_back);
 }
@@ -199,17 +181,22 @@ void CDArray<T>::pop_back()
 template <class T>
 void CDArray<T>::insert(size_t pos, T const &v)
 {
-    assert(pos >= 0 && pos < size());
+    assert(pos >= 0 && pos <= size());
 #ifndef NDEBUG
     size_t old_size = size();
     T old_back = get(size() - 1);
     T old_pos_v = get(pos);
 #endif
-    // TODO
-    // Hint: if pos==0, delegate in push_front.
-    // Remember: back_ needs to be updated too.
-
-    //
+    if (is_full())
+    {
+        grow();
+    }
+    for (size_t i = size(); i > pos; --i)
+    {
+        data_[i] = data_[i - 1];
+    }
+    data_[pos] = v;
+    ++size_;
     assert(size() == old_size + 1);
     assert(get(pos) == v);
     assert(get(pos + 1) == old_pos_v);
@@ -224,10 +211,11 @@ void CDArray<T>::remove(size_t pos)
     size_t old_size = size();
     T old_next_pos_v = (pos <= (size() - 2)) ? get(pos + 1) : T();
 #endif
-    // TODO
-    // Remember: back_ needs to be updated.
-
-    //
+    for (size_t i = pos; i < size() - 1; ++i)
+    {
+        data_[i] = data_[i + 1];
+    }
+    --size_;
     assert(size() == old_size - 1);
     assert(pos == size() || get(pos) == old_next_pos_v);
 }
@@ -240,9 +228,23 @@ void CDArray<T>::grow()
     T old_front = get(0);
     T old_back = get(size() - 1);
 #endif
-    // TODO
 
-    //
+    // Duplicar la capacidad
+    size_t new_capacity = old_capacity * 2;
+
+    // Crear un nuevo bloque de memoria con la nueva capacidad
+    std::shared_ptr<T[]> new_data(new T[new_capacity]);
+
+    // Copiar los elementos del arreglo antiguo al nuevo bloque de memoria
+    for (size_t i = 0; i < size(); ++i)
+    {
+        new_data[i] = data_[i];
+    }
+
+    // Actualizar el puntero del arreglo para que apunte al nuevo bloque de memoria
+    data_ = new_data;
+    capacity_ = new_capacity;
+
     assert(capacity() == 2 * old_capacity);
     assert(get(0) == old_front);
     assert(get(size() - 1) == old_back);

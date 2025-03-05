@@ -1,0 +1,9 @@
+/home/juanjo/ED/1.Practica/linear_ds/build/CMakeFiles/test_list.dir
+/home/juanjo/ED/1.Practica/linear_ds/build/CMakeFiles/test_dnode.dir
+/home/juanjo/ED/1.Practica/linear_ds/build/CMakeFiles/test_iterator.dir
+/home/juanjo/ED/1.Practica/linear_ds/build/CMakeFiles/test_stack.dir
+/home/juanjo/ED/1.Practica/linear_ds/build/CMakeFiles/test_cdarray.dir
+/home/juanjo/ED/1.Practica/linear_ds/build/CMakeFiles/test_queue.dir
+/home/juanjo/ED/1.Practica/linear_ds/build/CMakeFiles/test.dir
+/home/juanjo/ED/1.Practica/linear_ds/build/CMakeFiles/edit_cache.dir
+/home/juanjo/ED/1.Practica/linear_ds/build/CMakeFiles/rebuild_cache.dir
