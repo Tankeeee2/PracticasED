@@ -1,4 +1,4 @@
-TestCDArray 1 0.066306
+TestCDArray 2 0.0683538
 TestCDArrayFoldUnfold 0 0
 TestQueue 0 0
 TestDNode 0 0
