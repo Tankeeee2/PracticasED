@@ -1,0 +1,34 @@
+# Directorios de compilación
+build/
+*/build/
+*/**/build/
+
+# Archivos de CMake
+**/CMakeCache.txt
+**/CMakeFiles/
+**/CMakeScripts/
+**/*.cmake
+**/Makefile
+*.ninja
+*.user
+*.su
+*.idb
+*.pdb
+
+# Binarios y librerías
+*.exe
+*.a
+*.so
+*.dll
+*.lib
+*.dylib
+
+# Archivos temporales
+*.o
+*.obj
+*.out
+*.log
+
+# Directorios de IDE's
+.vscode/
+.idea/
