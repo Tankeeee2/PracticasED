@@ -17,10 +17,11 @@
 template <class T>
 List<T>::List()
 {
-    // TODO
-    // Remember: in an empty list, the dummy node is linked with itself.
-
-    //
+    // Create the dummy node and make it point to itself
+    head_ = DNode<T>::create();
+    head_->set_next(head_);
+    head_->set_prev(head_);
+    size_ = 0;
     assert(is_empty());
 }
 
@@ -55,17 +56,13 @@ typename DNode<T>::Ref List<T>::dummy() const
 template <class T>
 bool List<T>::is_empty() const
 {
-    // TODO: recode with respect to your representation.
-    return false;
-    //
+    return size_ == 0;
 }
 
 template <class T>
 size_t List<T>::size() const
 {
-    // TODO: recode with respect to your representation.
-    return 0;
-    //
+    return size_;
 }
 
 template <class T>
@@ -99,12 +96,7 @@ template <class T>
 T const &List<T>::front() const
 {
     assert(!is_empty());
-
-    // TODO: recode with respect to your representation.
-    // Hint: use iterators.
-    T fixme{};
-    return fixme;
-    //
+    return head_->next()->item();
 }
 
 template <class T>
@@ -128,15 +120,19 @@ void List<T>::fold(std::ostream &out) const
 }
 
 template <class T>
-void List<T>::hook(typename DNode<T>::Ref n, typename DNode<T>::Ref pos)
+void List<T>::hook(typename DNode<T>::Ref node, typename DNode<T>::Ref pos)
 {
 #ifndef NDEBUG
     auto old_size = size();
 #endif
-    // TODO
-    // Remember updating the size.
-
-    //
+    // Connect node's pointers
+    node->set_prev(pos->prev());
+    node->set_next(pos);
+    // Update surrounding nodes
+    pos->prev()->set_next(node);
+    pos->set_prev(node);
+    // Update size
+    size_++;
     assert(size() == old_size + 1);
 }
 
@@ -146,10 +142,11 @@ void List<T>::unhook(typename DNode<T>::Ref pos)
 #ifndef NDEBUG
     auto old_size = size();
 #endif
-    // TODO
-    // Remember updating the size.
-
-    //
+    // Connect surrounding nodes
+    pos->prev()->set_next(pos->next());
+    pos->next()->set_prev(pos->prev());
+    // Update size
+    size_--;
     assert(size() == old_size - 1);
 }
 
@@ -200,10 +197,9 @@ void List<T>::push_front(T const &new_it)
 #ifndef NDEBUG
     size_t old_size = size();
 #endif
-    // TODO
-    //  Hint: delegate in insert();
-
-    //
+    // Insert at beginning (after dummy node)
+    auto new_node = DNode<T>::create(new_it);
+    hook(new_node, head_->next());
     assert(front() == new_it);
     assert(size() == (old_size + 1));
 }
@@ -229,10 +225,8 @@ void List<T>::pop_front()
 #ifndef NDEBUG
     size_t old_size = size();
 #endif
-    // TODO
-    // Hint: delegate in remove.
-
-    //
+    // Remove first real node (after dummy)
+    unhook(head_->next());
     assert(size() == (old_size - 1));
 }
 

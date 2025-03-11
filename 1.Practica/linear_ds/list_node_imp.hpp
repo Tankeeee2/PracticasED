@@ -13,26 +13,24 @@
 template <class T>
 bool DNode<T>::is_dummy() const
 {
-    // TODO: recode with respect to your representation.
-    return false;
-    //
+    return _item == nullptr;
 }
 
 template <class T>
 DNode<T>::DNode()
 {
-    // TODO
-
-    //
+    _item = nullptr;
+    _next = nullptr; 
+    _prev = nullptr;
     assert(is_dummy());
 }
 
 template <class T>
 DNode<T>::DNode(T const &it)
 {
-    // TODO
-
-    //
+    _item = std::make_shared<T>(it);
+    _next = nullptr;
+    _prev = nullptr;
     assert(!is_dummy());
     assert(next() == nullptr);
     assert(prev() == nullptr);
@@ -41,9 +39,9 @@ DNode<T>::DNode(T const &it)
 template <class T>
 DNode<T>::DNode(T const &it, Ref next_n)
 {
-    // TODO
-
-    //
+    _item = std::make_shared<T>(it);
+    _next = next_n;
+    _prev = nullptr;
     assert(!is_dummy());
     assert(next() == next_n);
     assert(prev() == nullptr);
@@ -52,9 +50,9 @@ DNode<T>::DNode(T const &it, Ref next_n)
 template <class T>
 DNode<T>::DNode(T const &it, Ref next_n, Ref prev_n)
 {
-    // TODO
-
-    //
+    _item = std::make_shared<T>(it);
+    _next = next_n;
+    _prev = prev_n;
     assert(!is_dummy());
     assert(next() == next_n);
     assert(prev() == prev_n);
@@ -116,51 +114,38 @@ template <class T>
 T const &DNode<T>::item() const
 {
     assert(!is_dummy());
-
-    // TODO: recode with respect to your representation.
-    T fixme{};
-    return fixme;
-    //
+    return *_item;
 }
 
 template <class T>
 typename DNode<T>::Ref DNode<T>::prev() const
 {
-    // TODO: recode with respect to your representation.
-    return nullptr;
-    //
+    return _prev;
 }
 
 template <class T>
 typename DNode<T>::Ref DNode<T>::next() const
 {
-    // TODO: recode with respect to your representation.
-    return nullptr;
-    //
+    return _next;
 }
 
 template <class T>
 void DNode<T>::set_item(const T &new_it)
 {
-    // TODO
-
-    //
+    assert(!is_dummy());
+    *_item = new_it;
 }
 
 template <class T>
 void DNode<T>::set_prev(DNode<T>::Ref n)
 {
-    // TODO
-
-    //
+    _prev = n;
     assert(n == prev());
 }
 
 template <class T>
 void DNode<T>::set_next(DNode<T>::Ref n)
 {
-    // TODO
-
-    //
+    _next = n;
     assert(n == next());
 }

@@ -281,12 +281,9 @@ protected:
    */
   void set_size(size_t new_size);
 
-  // TODO
-  // Give a representation using a double linked list of nodes thats used
-  // a dummy node to mark the "end" of the list.
-  // Also we want a size() operation with O(1).
-
-  //
+private:
+  typename DNode<T>::Ref head_;
+  size_t size_;
 };
 
 #include <list_imp.hpp>
