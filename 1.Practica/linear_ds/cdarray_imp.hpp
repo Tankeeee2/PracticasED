@@ -55,7 +55,13 @@ template <class T>
 CDArray<T>::CDArray(std::istream &in) noexcept(false) : CDArray(1)
 {
     std::string token;
-    while (in >> token)
+    in >> token; // Leer el primer '['
+    if (token != "[")
+    {
+        throw std::runtime_error("Wrong input format.");
+    }
+
+    while (in >> token && token != "]")
     {
         std::istringstream iss(token);
         T value;
@@ -65,15 +71,22 @@ CDArray<T>::CDArray(std::istream &in) noexcept(false) : CDArray(1)
         }
         push_back(value);
     }
+
+    if (token != "]")
+    {
+        throw std::runtime_error("Wrong input format.");
+    }
 }
 
 template <class T>
 std::ostream &CDArray<T>::fold(std::ostream &out) const
 {
+    out << "[ ";
     for (size_t i = 0; i < size(); ++i)
     {
         out << get(i) << " ";
     }
+    out << "]";
     return out;
 }
 
