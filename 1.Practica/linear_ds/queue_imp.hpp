@@ -14,60 +14,43 @@
 template <class T>
 Queue<T>::Queue()
 {
-    // TODO
-
-    //
+    data_ = CDArray<T>();
     assert(is_empty());
 }
 
 template <class T>
 bool Queue<T>::is_empty() const
 {
-    // TODO: recode with respect to your representation.
-    return false;
-    //
+    return data_.size() == 0;
 }
 
 template <class T>
-size_t
-Queue<T>::size() const
+size_t Queue<T>::size() const
 {
-    // TODO: recode with respect to your representation.
-    return 0;
-    //
+    return data_.size();
 }
 
 template <class T>
-T const &Queue<T>::front() const
+T const& Queue<T>::front() const
 {
     assert(!is_empty());
-
-    // TODO: recode with respect to your representation.
-    T fixme{};
-    return fixme;
-    //
+    return data_.get(0);
 }
 
 template <class T>
-T const &Queue<T>::back() const
+T const& Queue<T>::back() const
 {
     assert(!is_empty());
-
-    // TODO: recode with respect to your representation.
-    T fixme{};
-    return fixme;
-    //
+    return data_.get(size()-1);
 }
 
 template <class T>
-void Queue<T>::enque(const T &new_it)
+void Queue<T>::enque(const T& new_it)
 {
 #ifndef NDEBUG
     size_t old_size = size();
 #endif
-    // TODO
-
-    //
+    data_.push_back(new_it);
     assert(back() == new_it);
     assert(size() == (old_size + 1));
 }
@@ -79,8 +62,6 @@ void Queue<T>::deque()
 #ifndef NDEBUG
     size_t old_size = size();
 #endif
-    // TODO
-
-    //
+    data_.pop_front();
     assert(size() == (old_size - 1));
 }
