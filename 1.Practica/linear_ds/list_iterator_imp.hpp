@@ -16,50 +16,35 @@ ListIterator<T>::~ListIterator() {}
 template <class T>
 bool ListIterator<T>::is_valid() const
 {
-    bool ret_v = false;
-    // TODO: recode with respect to your representation.
-    // Hint: Do not invoke node() here because that provoques an infinite recursion.
-    return false;
-    //
+    return node_ != nullptr;  // Cambiamos la validación
 }
 
 template <class T>
 ListIterator<T>::ListIterator()
 {
-    // TODO
-
-    //
+    node_ = nullptr;
     assert(!is_valid());
-};
+}
 
 template <class T>
 ListIterator<T>::ListIterator(typename DNode<T>::Ref const &n)
 {
-    // TODO
-
-    //
-    assert(n == nullptr || is_valid());
-    assert(n != nullptr || !is_valid());
-};
+    node_ = n;
+}
 
 template <class T>
 T const &ListIterator<T>::item() const
 {
-    assert(is_valid());
-    // TODO: recode with respect to your representation.
-    T fixme{};
-    return fixme;
-    //
+    assert(is_valid() && !node_->is_dummy());
+    return node_->item();
 }
 
 template <class T>
 ListIterator<T> ListIterator<T>::next(size_t dist) const
 {
     assert(is_valid());
-    ListIterator<T> ret_v;
-    // TODO
-
-    //
+    ListIterator<T> ret_v(*this);
+    ret_v.goto_next(dist);
     return ret_v;
 }
 
@@ -67,86 +52,78 @@ template <class T>
 ListIterator<T> ListIterator<T>::prev(size_t dist) const
 {
     assert(is_valid());
-    ListIterator<T> ret_v;
-    // TODO
-
-    //
+    ListIterator<T> ret_v(*this);
+    ret_v.goto_prev(dist);
     return ret_v;
 }
 
 template <class T>
 size_t ListIterator<T>::distance(ListIterator<T> const &other) const
 {
-    assert(is_valid());
-    assert(other.is_valid());
-    size_t ret_v = 0;
-    // TODO
-
-    //
-    return ret_v;
+    size_t dist = 0;
+    auto aux = *this;
+    
+    while(aux.node_ != nullptr && aux.node_ != other.node_)
+    {
+        auto next = aux.node_->next();
+        if (next != nullptr && !next->is_dummy())
+            dist++;
+        aux.node_ = next;
+    }
+    
+    return dist;
 }
 
 template <class T>
 bool ListIterator<T>::operator==(ListIterator<T> const &o) const
 {
-    // TODO: recode with respect to your representation.
-    // Remember: two iterators are equal if both point to the same node.
-    return false;
-    //
+    return node_ == o.node_;
 }
 
 template <class T>
 bool ListIterator<T>::operator!=(ListIterator<T> const &o) const
 {
-    bool ret_v = false;
-
-    // TODO: recode with respect to your representation.
-    // Remember: two iterators are equal if both point to the same node.
-    return false;
-    //
+    return !(*this == o);
 }
 
 template <class T>
 void ListIterator<T>::set_item(T const &it)
 {
     assert(is_valid());
-    // TODO
-
-    //
+    node_->set_item(it);
 }
 
 template <class T>
 void ListIterator<T>::goto_next(size_t dist)
 {
-    assert(is_valid());
-    // TODO
-
-    //
+    while(dist > 0 && node_ != nullptr)  // Modificamos la condición
+    {
+        node_ = node_->next();
+        if (node_ != nullptr && !node_->is_dummy())
+            dist--;
+    }
 }
 
 template <class T>
 void ListIterator<T>::goto_prev(size_t dist)
 {
-    assert(is_valid());
-    // TODO
-
-    //
+    while(dist > 0 && node_ != nullptr)  // Modificamos la condición
+    {
+        node_ = node_->prev();
+        if (node_ != nullptr && !node_->is_dummy())
+            dist--;
+    }
 }
 
 template <class T>
 typename DNode<T>::Ref ListIterator<T>::node() const
 {
-    typename DNode<T>::Ref ret_v;
-    // TODO: recode with respect to your representation.
-    return nullptr;
-    //
+    return node_;
 }
 
 template <class T>
 void ListIterator<T>::set_node(typename DNode<T>::Ref const &n)
 {
-    // TODO
-
-    //
+    node_ = n;
     assert(node() == n);
 }

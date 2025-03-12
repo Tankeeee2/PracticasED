@@ -210,10 +210,7 @@ void List<T>::push_back(T const &new_it)
 #ifndef NDEBUG
     size_t old_size = size();
 #endif
-    // TODO
-    //  Hint: delegate in insert();
 
-    //
     assert(back() == new_it);
     assert(size() == (old_size + 1));
 }
@@ -225,7 +222,6 @@ void List<T>::pop_front()
 #ifndef NDEBUG
     size_t old_size = size();
 #endif
-    // Remove first real node (after dummy)
     unhook(head_->next());
     assert(size() == (old_size - 1));
 }
@@ -238,10 +234,7 @@ void List<T>::pop_back()
     size_t old_size = size();
     auto old_end_prev_prev = end().prev().prev();
 #endif
-    // TODO
-    // Hint: delegate in remove.
 
-    //
     assert(is_empty() || end().prev() == old_end_prev_prev);
     assert(size() == (old_size - 1));
 }
@@ -250,9 +243,7 @@ template <class T>
 typename List<T>::iterator List<T>::find(T const &it, List<T>::iterator const &from) const
 {
     iterator ret_v;
-    // TODO
 
-    //
     assert(ret_v == end() || ret_v.item() == it);
     return ret_v;
 }
@@ -266,10 +257,7 @@ void List<T>::splice(iterator const &pos, List<T> &list2,
     size_t old_l2_size = list2.size();
     auto old_range_size = first.distance(last);
 #endif
-    // TODO
-    // Hint: if the range [first, last) is empty, nothing must be done.
 
-    //
     assert(size() == (old_size + old_range_size));
     assert(list2.size() == (old_l2_size - old_range_size));
 }
@@ -281,10 +269,7 @@ void List<T>::splice(iterator const &pos, List<T> &list2)
     size_t old_size = size();
     auto old_list2_size = list2.size();
 #endif
-    // TODO
-    // Hint: Delegate in splice the list2 range [begin, end).
 
-    //
     assert(size() == (old_size + old_list2_size));
     assert(list2.size() == 0);
     assert(list2.is_empty());
@@ -297,10 +282,7 @@ void List<T>::splice(iterator const &pos, List<T> &list2, iterator const &i)
     size_t old_size = size();
     auto old_list2_size = list2.size();
 #endif
-    // TODO
-    // Hint: Delegate in splice the list2 range [i, i.next()).
 
-    //
     assert(size() == (old_size + 1));
     assert(list2.size() == (old_list2_size - 1));
 }
@@ -309,24 +291,12 @@ template <class T>
 template <class Compare>
 void List<T>::merge(List<T> &other, Compare comp)
 {
-    // TODO
-    // Remember: The nodes of the other list are spliced into this list.
 
-    //
 }
 
 template <class T>
 template <class Compare>
 void List<T>::sort(Compare comp)
 {
-    // TODO
-    // Remember: we want a complexity in to N Log(N) so mergeSort algorithm is
-    // a good candidate to sort the list.
-    // Hint: Do a recursive implementation, splitting the list into two halves,
-    // sorting recursively each part and merging the sorted lists to obtain
-    // the full sorted list.
 
-    // The empty list and a list with only one element are sorted by default.
-
-    //
 }
