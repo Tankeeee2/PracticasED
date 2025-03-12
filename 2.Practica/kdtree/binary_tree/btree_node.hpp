@@ -86,7 +86,9 @@ protected:
     // TODO
     // Specify a representation.
     // Hint: use Ref typename for the link to child nodes.
-
+    T _item;
+    Ref _left;
+    Ref _right;
     //
 };
 
