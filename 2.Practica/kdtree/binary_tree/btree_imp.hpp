@@ -1,9 +1,8 @@
 /**
  * CopyRight F. J. Madrid-Cuevas <fjmadrid@uco.es>
- *
  * Sólo se permite el uso de este código en la docencia de las asignaturas sobre
  * Estructuras de Datos de la Universidad de Córdoba.
- *
+ * 
  * Está prohibido su uso para cualquier otro objetivo.
  */
 #pragma once
@@ -121,7 +120,7 @@ template <class T>
 void BTree<T>::create_root(const T &it)
 {
     assert(is_empty());
-    _root = BTNode<T>::create(it); // Usar el método estático create en lugar del constructor
+    _root = BTNode<T>::create(it);
     assert(!is_empty());
     assert(item() == it);
     assert(left().is_empty());
