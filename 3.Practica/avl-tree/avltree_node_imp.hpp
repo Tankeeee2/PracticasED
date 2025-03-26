@@ -22,7 +22,11 @@ template <class T>
 AVLTNode<T>::AVLTNode(T const &it)
 {
     // TODO
-
+    item_ = it;
+    left_ = nullptr;
+    right_ = nullptr;
+    parent_ = nullptr;
+    height_ = 0;
     //
     assert(item() == it);
     assert(left() == nullptr);
@@ -46,8 +50,7 @@ template <class T>
 const T &AVLTNode<T>::item() const
 {
     // TODO: recode using your representation.
-    T fixme;
-    return fixme;
+    return item_;
     //
 }
 
@@ -55,8 +58,7 @@ template <class T>
 typename AVLTNode<T>::Ref const &AVLTNode<T>::left() const
 {
     // TODO: fixme
-    typename AVLTNode<T>::Ref fixme;
-    return fixme;
+    return left_;
     //
 }
 
@@ -64,8 +66,7 @@ template <class T>
 typename AVLTNode<T>::Ref &AVLTNode<T>::left()
 {
     // TODO: fixme
-    typename AVLTNode<T>::Ref fixme;
-    return fixme;
+    return left_;
     //
 }
 
@@ -73,8 +74,7 @@ template <class T>
 typename AVLTNode<T>::Ref const &AVLTNode<T>::right() const
 {
     // TODO
-    typename AVLTNode<T>::Ref fixme;
-    return fixme;
+    return right_;
     //
 }
 
@@ -82,8 +82,7 @@ template <class T>
 typename AVLTNode<T>::Ref &AVLTNode<T>::right()
 {
     // TODO
-    typename AVLTNode<T>::Ref fixme;
-    return fixme;
+    return right_;
     //
 }
 
@@ -185,7 +184,7 @@ template <class T>
 void AVLTNode<T>::set_item(const T &new_it)
 {
     // TODO
-
+    item_ = new_it;
     //
     assert(item() == new_it);
 }
@@ -207,7 +206,7 @@ void AVLTNode<T>::set_left(Ref new_child)
     // Remember: When implementing the AVL Tree, the child's parent link is needed to be
     // updated to point to this node. Use This() method to get a Reference to this.
     // Remember: When implementing the AVL Tree, the node height must be updated at the end.
-
+    left_ = new_child;
     //
     assert(left() == new_child);
 #ifndef __ONLY_BSTREE__
@@ -223,7 +222,7 @@ void AVLTNode<T>::set_right(AVLTNode<T>::Ref new_child)
     // Remember: for the AVLTree the child's parent link is needed to be
     // updated to point to this node. Use This() method to get a Reference to this.
     // Remember: for the AVLTree the height of the node must be updated at the end.
-
+    right_ = new_child;
     //
     assert(right() == new_child);
 #ifndef __ONLY_BSTREE__
