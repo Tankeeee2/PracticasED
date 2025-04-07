@@ -170,12 +170,12 @@ protected:
     AVLTNode<T>::Ref This_;        // A reference to this node.
     AVLTNode<T>::Ref This() const; // Get a reference to this node.
 
-    // TODO
-    // Give a representation.
-    // Remember: to implement the AVLTNode for a BSTree we only need two links to the children and no height or balance factor support.
-    // Remember: to implement the AVLTNode for a AVLTree add a link to the parent node and height and balance factor O(1) support.
-
-    //
+private:
+    T item_;
+    AVLTNode<T>::Ref left_;
+    AVLTNode<T>::Ref right_;
+    AVLTNode<T>::Ref parent_;
+    int height_;
 };
 
 #include <avltree_node_imp.hpp>

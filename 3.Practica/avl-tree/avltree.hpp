@@ -347,7 +347,9 @@ protected:
 
   // TODO
   // Give a representation.
-
+  typename AVLTNode<T>::Ref root_;
+  typename AVLTNode<T>::Ref parent_;
+  typename AVLTNode<T>::Ref current_;
   //
 };
 

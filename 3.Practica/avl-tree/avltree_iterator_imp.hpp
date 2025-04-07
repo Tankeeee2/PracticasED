@@ -16,7 +16,8 @@ template <class T>
 const typename AVLTNode<T>::Ref &AVLTreeIterator<T>::node() const
 {
     // TODO: recode using your representation.
-    return typename AVLTNode<T>::Ref();
+    typename AVLTNode<T>::Ref node_;
+    return node_;
     //
 }
 
@@ -24,8 +25,8 @@ template <class T>
 typename AVLTNode<T>::Ref &AVLTreeIterator<T>::node()
 {
     // TODO: recode using your representation.
-    typename AVLTNode<T>::Ref fixme;
-    return fixme;
+    typename AVLTNode<T>::Ref node_;
+    return node_;
     //
 }
 

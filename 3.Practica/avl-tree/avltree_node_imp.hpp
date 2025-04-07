@@ -11,6 +11,7 @@
 #pragma once
 #include <cassert>
 #include <avltree_node.hpp>
+#include <algorithm>
 
 template <class T>
 typename AVLTNode<T>::Ref AVLTNode<T>::This() const
@@ -22,7 +23,11 @@ template <class T>
 AVLTNode<T>::AVLTNode(T const &it)
 {
     // TODO
-
+    item_ = it;
+    left_ = nullptr;
+    right_ = nullptr;
+    parent_ = nullptr;
+    height_ = 0;
     //
     assert(item() == it);
     assert(left() == nullptr);
@@ -46,8 +51,7 @@ template <class T>
 const T &AVLTNode<T>::item() const
 {
     // TODO: recode using your representation.
-    T fixme;
-    return fixme;
+    return item_;
     //
 }
 
@@ -55,8 +59,7 @@ template <class T>
 typename AVLTNode<T>::Ref const &AVLTNode<T>::left() const
 {
     // TODO: fixme
-    typename AVLTNode<T>::Ref fixme;
-    return fixme;
+    return left_;
     //
 }
 
@@ -64,8 +67,7 @@ template <class T>
 typename AVLTNode<T>::Ref &AVLTNode<T>::left()
 {
     // TODO: fixme
-    typename AVLTNode<T>::Ref fixme;
-    return fixme;
+    return left_;
     //
 }
 
@@ -73,8 +75,7 @@ template <class T>
 typename AVLTNode<T>::Ref const &AVLTNode<T>::right() const
 {
     // TODO
-    typename AVLTNode<T>::Ref fixme;
-    return fixme;
+    return right_;
     //
 }
 
@@ -82,8 +83,7 @@ template <class T>
 typename AVLTNode<T>::Ref &AVLTNode<T>::right()
 {
     // TODO
-    typename AVLTNode<T>::Ref fixme;
-    return fixme;
+    return right_;
     //
 }
 
@@ -93,8 +93,7 @@ typename AVLTNode<T>::Ref const &AVLTNode<T>::child(int dir) const
     assert(dir == 0 || dir == 1);
     // TODO fixme
     // Remember: this operation is only necessary for the AVLTree.
-    AVLTNode<T>::Ref fixme;
-    return fixme;
+    return (dir == 0) ? left_ : right_;
     //
 }
 
@@ -104,8 +103,7 @@ typename AVLTNode<T>::Ref &AVLTNode<T>::child(int dir)
     assert(dir == 0 || dir == 1);
     // TODO fixme
     // Remember: this operation is only necessary for the AVLTree.
-    AVLTNode<T>::Ref fixme;
-    return fixme;
+    return (dir == 0) ? left_ : right_;
     //
 }
 
@@ -115,8 +113,7 @@ typename AVLTNode<T>::Ref const &AVLTNode<T>::parent() const
     // TODO: fixme
     // Remember: this operation is only necessary for the AVLTree.
     //
-    AVLTNode<T>::Ref fixme;
-    return fixme;
+    return parent_;
     //
 }
 
@@ -126,8 +123,7 @@ typename AVLTNode<T>::Ref &AVLTNode<T>::parent()
     // TODO: fixme
     // Remember: this operation is only necessary for the AVLTree.
     //
-    AVLTNode<T>::Ref fixme;
-    return fixme;
+    return parent_;
     //
 }
 
@@ -137,8 +133,7 @@ int AVLTNode<T>::height() const
     // TODO
     // Remember: this operation is only necessary for the AVLTree.
     // Remember: we want O(1) here.
-    int fixme = 0;
-    return fixme;
+    return height_;
     //
 }
 
@@ -148,7 +143,9 @@ int AVLTNode<T>::balance_factor() const
     int bf = 0;
     // TODO
     // Remember: this operation is only necessary for the AVLTree.
-
+    int left_height = (left_) ? left_->height() : -1;
+    int right_height = (right_) ? right_->height() : -1;
+    bf = right_height - left_height;
     //
     return bf;
 }
@@ -162,7 +159,9 @@ bool AVLTNode<T>::check_height_invariant() const
 #else
     // TODO
     // Remember: the height of a node is one more than the maximum of the heights of its children.
-
+    int left_height = (left_) ? left_->height() : -1;
+    int right_height = (right_) ? right_->height() : -1;
+    ret_val = (height_ == 1 + std::max(left_height, right_height));
     //
 #endif
     return ret_val;
@@ -176,7 +175,9 @@ void AVLTNode<T>::update_height()
     // Remember: we want O(1) here.
     // Remember: the height of a node is one more than the maximum of the heights of its children.
     // Remember: the height of a "void" node is -1.
-
+    int left_height = (left_) ? left_->height() : -1;
+    int right_height = (right_) ? right_->height() : -1;
+    height_ = 1 + std::max(left_height, right_height);
     //
     assert(check_height_invariant());
 }
@@ -185,7 +186,7 @@ template <class T>
 void AVLTNode<T>::set_item(const T &new_it)
 {
     // TODO
-
+    item_ = new_it;
     //
     assert(item() == new_it);
 }
@@ -195,7 +196,7 @@ void AVLTNode<T>::set_parent(AVLTNode<T>::Ref new_parent)
 {
     // TODO
     // Remember: this operation is only necessary for the AVLTree.
-
+    parent_ = new_parent;
     //
     assert(parent() == new_parent);
 }
@@ -207,7 +208,16 @@ void AVLTNode<T>::set_left(Ref new_child)
     // Remember: When implementing the AVL Tree, the child's parent link is needed to be
     // updated to point to this node. Use This() method to get a Reference to this.
     // Remember: When implementing the AVL Tree, the node height must be updated at the end.
-
+    if (left_)
+    {
+        left_->set_parent(nullptr);
+    }
+    left_ = new_child;
+    if (new_child)
+    {
+        new_child->set_parent(This());
+    }
+    update_height();
     //
     assert(left() == new_child);
 #ifndef __ONLY_BSTREE__
@@ -223,7 +233,16 @@ void AVLTNode<T>::set_right(AVLTNode<T>::Ref new_child)
     // Remember: for the AVLTree the child's parent link is needed to be
     // updated to point to this node. Use This() method to get a Reference to this.
     // Remember: for the AVLTree the height of the node must be updated at the end.
-
+    if (right_)
+    {
+        right_->set_parent(nullptr);
+    }
+    right_ = new_child;
+    if (new_child)
+    {
+        new_child->set_parent(This());
+    }
+    update_height();
     //
     assert(right() == new_child);
 #ifndef __ONLY_BSTREE__
@@ -238,7 +257,14 @@ void AVLTNode<T>::set_child(int dir, Ref new_child)
     assert(dir == 0 || dir == 1);
     // TODO
     // Remember: this operation is only necessary for the AVLTree.
-
+    if (dir == 0)
+    {
+        set_left(new_child);
+    }
+    else
+    {
+        set_right(new_child);
+    }
     //
     assert(check_height_invariant());
     assert(dir == 0 || right() == new_child);
