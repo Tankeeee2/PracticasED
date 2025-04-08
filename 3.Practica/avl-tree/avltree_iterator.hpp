@@ -125,7 +125,7 @@ protected:
 
     // TODO
     // Give a representation.
-
+    typename AVLTNode<T>::Ref node_;
     //
 };
 

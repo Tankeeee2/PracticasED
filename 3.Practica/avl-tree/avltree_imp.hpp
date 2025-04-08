@@ -56,36 +56,27 @@ AVLTree<T>::AVLTree(std::istream &in) noexcept(false)
     in >> token;
 
     if (token == "[]")
+    {
+        root_ = nullptr; // Asegurar raíz nula
         return;
+    }
 
     if (token != "[")
-        throw std::runtime_error("Wrong input format");
+        throw std::runtime_error("Wrong input format.");
 
     T item;
     in >> item;
     root_ = AVLTNode<T>::create(item);
 
     AVLTree<T> left_subtree(in);
-    if (left_subtree.root_ != nullptr)
-    {
-        if (left_subtree.root_->item() >= item)
-            throw std::runtime_error("It is not a binary search tree");
-        root_->set_left(left_subtree.root_);
-        left_subtree.root_->set_parent(root_);
-    }
+    root_->set_left(left_subtree.root_ ? left_subtree.root_ : nullptr);
 
     AVLTree<T> right_subtree(in);
-    if (right_subtree.root_ != nullptr)
-    {
-        if (right_subtree.root_->item() <= item)
-            throw std::runtime_error("It is not a binary search tree");
-        root_->set_right(right_subtree.root_);
-        right_subtree.root_->set_parent(root_);
-    }
+    root_->set_right(right_subtree.root_ ? right_subtree.root_ : nullptr);
 
     in >> token;
     if (token != "]")
-        throw std::runtime_error("Wrong input format");
+        throw std::runtime_error("Wrong input format.");
     //
 
     if (!is_a_binary_search_tree())
@@ -451,6 +442,7 @@ bool AVLTree<T>::search(T const &k)
         }
     }
     //
+
     return found;
 }
 
