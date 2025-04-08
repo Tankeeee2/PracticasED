@@ -17,7 +17,7 @@ build/
 
 # Binarios y librerías
 *.exe
-*.a
+#*.a --- Es necesario para los test
 *.so
 *.dll
 *.lib
