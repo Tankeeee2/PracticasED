@@ -23,7 +23,7 @@ inline size_t parent(size_t i)
 {
     assert(i > 0);
     //  TODO: fixme
-    return 0;
+    return ((i - 1) / 2);
     //
 }
 
@@ -36,7 +36,7 @@ inline size_t parent(size_t i)
 inline size_t left(size_t i)
 {
     // TODO: fixme
-    return 0;
+    return ((2 * i) + 1);
     //
 }
 
@@ -49,7 +49,7 @@ inline size_t left(size_t i)
 inline size_t right(size_t i)
 {
     // TODO: fixme
-    return 0;
+    return ((i * 2) + 2);
     //
 }
 
@@ -57,6 +57,14 @@ template <class T>
 void Heap<T>::shift_up(size_t i)
 {
     // TODO
+    if (i > 0)
+    {
+        if (comp_((*values_)[i], (*values_)[parent(i)]))
+        {
+            std::swap((*values_)[i], (*values_)[parent(i)]);
+            shift_up(parent(i));
+        }
+    }
 
     //
 }
@@ -97,7 +105,8 @@ Heap<T>::Heap(std::vector<T> &values, Comp const &comp) : values_(&values), comp
 {
     // TODO
     // Hint: use the heapify function
-
+    last_item_ = size();
+    heapify();
     //
     assert(is_a_heap());
     assert(size() == values.size());
@@ -112,7 +121,7 @@ template <class T>
 bool Heap<T>::is_empty() const
 {
     // TODO: fixme
-    return true;
+    return (last_item_ == 0);
     //
 }
 
@@ -120,7 +129,7 @@ template <class T>
 size_t Heap<T>::size() const
 {
     // TODO: fixme
-    return 0;
+    return (last_item_);
     //
 }
 
@@ -129,7 +138,7 @@ T const &Heap<T>::item() const
 {
     assert(!is_empty());
     // TODO: fixme
-    return T{};
+    return (*values_)[0];
     //
 }
 
