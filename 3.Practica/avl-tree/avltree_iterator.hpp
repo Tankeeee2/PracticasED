@@ -12,121 +12,120 @@
 
 #include <avltree_node.hpp>
 
-template <class T>
-class AVLTree; // Forward declaration
+template <class T> class AVLTree; // Forward declaration
 
 /**
  * @brief An iterator for a AVLTree.
  *
  * @tparam T
  */
-template <class T>
-class AVLTreeIterator
-{
+template <class T> class AVLTreeIterator {
 
 public:
-    /** @name Life cicle.*/
-    /** @{*/
+  /** @name Life cicle.*/
+  /** @{*/
 
-    /**
-     * @brief Construct a new AVLTreeIterator object
-     *
-     */
-    AVLTreeIterator();
+  /**
+   * @brief Construct a new AVLTreeIterator object
+   *
+   */
+  AVLTreeIterator();
 
-    /** @} */
+  /** @} */
 
-    /** @name Observers*/
+  /** @name Observers*/
 
-    /** @{*/
+  /** @{*/
 
-    /**
-     * @brief Equalilty operator.
-     *
-     * @param other is a AVLTreeIterator to be compared.
-     * @return true if this iterator is equal to other (pointing to the same node).
-     */
-    bool operator==(AVLTreeIterator<T> const &other) const;
+  /**
+   * @brief Equalilty operator.
+   *
+   * @param other is a AVLTreeIterator to be compared.
+   * @return true if this iterator is equal to other (pointing to the same
+   * node).
+   */
+  bool operator==(AVLTreeIterator<T> const &other) const;
 
-    /**
-     * @brief Inequality operator.
-     *
-     * @param other is a AVLTreeIterator to be compared.
-     * @return true if this iterator is different to other (pointing to different nodes).
-     */
-    bool operator!=(AVLTreeIterator<T> const &other) const;
+  /**
+   * @brief Inequality operator.
+   *
+   * @param other is a AVLTreeIterator to be compared.
+   * @return true if this iterator is different to other (pointing to different
+   * nodes).
+   */
+  bool operator!=(AVLTreeIterator<T> const &other) const;
 
-    /**
-     * @brief Dereference operator.
-     *
-     * @return the item stored in the node pointed by this iterator.
-     */
-    T const &operator*() const;
+  /**
+   * @brief Dereference operator.
+   *
+   * @return the item stored in the node pointed by this iterator.
+   */
+  T const &operator*() const;
 
-    /**
-     * @brief Dereference operator.
-     *
-     * @return the item stored in the node pointed by this iterator.
-     */
-    const T *operator->() const;
+  /**
+   * @brief Dereference operator.
+   *
+   * @return the item stored in the node pointed by this iterator.
+   */
+  const T *operator->() const;
 
-    /**
-     * @brief Increment operator.
-     *
-     * @return AVLTreeIterator<T>&
-     */
-    AVLTreeIterator<T> &operator++();
+  /**
+   * @brief Increment operator.
+   *
+   * @return AVLTreeIterator<T>&
+   */
+  AVLTreeIterator<T> &operator++();
 
-    /**
-     * @brief Increment operator (postfix).
-     *
-     * @return AVLTreeIterator<T>
-     */
-    AVLTreeIterator<T> operator++(int);
+  /**
+   * @brief Increment operator (postfix).
+   *
+   * @return AVLTreeIterator<T>
+   */
+  AVLTreeIterator<T> operator++(int);
 
-    /**
-     * @brief Decrement operator.
-     *
-     * @return AVLTreeIterator<T>&
-     */
-    AVLTreeIterator<T> &operator--();
+  /**
+   * @brief Decrement operator.
+   *
+   * @return AVLTreeIterator<T>&
+   */
+  AVLTreeIterator<T> &operator--();
 
-    /**
-     * @brief Decrement operator (postfix).
-     *
-     * @return AVLTreeIterator<T>
-     */
-    AVLTreeIterator<T> operator--(int);
+  /**
+   * @brief Decrement operator (postfix).
+   *
+   * @return AVLTreeIterator<T>
+   */
+  AVLTreeIterator<T> operator--(int);
 
 protected:
-    // Allow AVLTree to create interators to traverse the tree.
-    friend class AVLTree<T>;
+  // Allow AVLTree to create interators to traverse the tree.
+  friend class AVLTree<T>;
 
-    /**
-     * @brief Get the node object pointed by this iterator.
-     *
-     * @return const AVLTNode<T>::Ref&
-     */
-    const typename AVLTNode<T>::Ref &node() const;
+  /**
+   * @brief Get the node object pointed by this iterator.
+   *
+   * @return const AVLTNode<T>::Ref&
+   */
+  const typename AVLTNode<T>::Ref &node() const;
 
-    /**
-     * @brief Get the node object pointed by this iterator.
-     *
-     * @return AVLTNode<T>::Ref&
-     */
-    typename AVLTNode<T>::Ref &node();
+  /**
+   * @brief Get the node object pointed by this iterator.
+   *
+   * @return AVLTNode<T>::Ref&
+   */
+  typename AVLTNode<T>::Ref &node();
 
-    /**
-     * @brief Construct a new AVLTreeIterator object
-     *
-     * @param node is the node to be pointed by this iterator.
-     */
-    AVLTreeIterator(const typename AVLTNode<T>::Ref &node);
+  /**
+   * @brief Construct a new AVLTreeIterator object
+   *
+   * @param node is the node to be pointed by this iterator.
+   */
+  AVLTreeIterator(const typename AVLTNode<T>::Ref &node);
 
-    // TODO
-    // Give a representation.
-    typename AVLTNode<T>::Ref node_;
-    //
+  // TODO
+  // Give a representation.
+  typename AVLTNode<T>::Ref node_;
+  //
 };
 
 #include <avltree_iterator_imp.hpp>

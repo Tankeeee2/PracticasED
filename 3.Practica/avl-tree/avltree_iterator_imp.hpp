@@ -13,105 +13,85 @@
 #include <avltree_iterator.hpp>
 
 template <class T>
-const typename AVLTNode<T>::Ref &AVLTreeIterator<T>::node() const
-{
-    // TODO: recode using your representation.
-    return node_;
-    //
+const typename AVLTNode<T>::Ref &AVLTreeIterator<T>::node() const {
+  // TODO: recode using your representation.
+  return node_;
+  //
+}
+
+template <class T> typename AVLTNode<T>::Ref &AVLTreeIterator<T>::node() {
+  // TODO: recode using your representation.
+  return node_;
+  //
+}
+
+template <class T> AVLTreeIterator<T>::AVLTreeIterator() {
+  // TODO
+
+  //
+  assert(node() == nullptr);
 }
 
 template <class T>
-typename AVLTNode<T>::Ref &AVLTreeIterator<T>::node()
-{
-    // TODO: recode using your representation.
-    return node_;
-    //
+AVLTreeIterator<T>::AVLTreeIterator(typename AVLTNode<T>::Ref const &node) {
+  // TODO
+
+  //
+  assert(this->node() == node);
 }
 
 template <class T>
-AVLTreeIterator<T>::AVLTreeIterator()
-{
-    // TODO
+bool AVLTreeIterator<T>::operator==(AVLTreeIterator<T> const &other) const {
+  bool equal = false;
+  // TODO
 
-    //
-    assert(node() == nullptr);
+  //
+  return equal;
 }
 
 template <class T>
-AVLTreeIterator<T>::AVLTreeIterator(typename AVLTNode<T>::Ref const &node)
-{
-    // TODO
+bool AVLTreeIterator<T>::operator!=(AVLTreeIterator<T> const &other) const {
+  bool different = false;
+  // TODO
 
-    //
-    assert(this->node() == node);
+  //
+  return different;
 }
 
-template <class T>
-bool AVLTreeIterator<T>::operator==(AVLTreeIterator<T> const &other) const
-{
-    bool equal = false;
-    // TODO
-
-    //
-    return equal;
+template <class T> T const &AVLTreeIterator<T>::operator*() const {
+  assert(node());
+  return node()->item();
 }
 
-template <class T>
-bool AVLTreeIterator<T>::operator!=(AVLTreeIterator<T> const &other) const
-{
-    bool different = false;
-    // TODO
-
-    //
-    return different;
+template <class T> const T *AVLTreeIterator<T>::operator->() const {
+  assert(node());
+  return &node()->item();
 }
 
-template <class T>
-T const &AVLTreeIterator<T>::operator*() const
-{
-    assert(node());
-    return node()->item();
+template <class T> AVLTreeIterator<T> &AVLTreeIterator<T>::operator++() {
+  assert(node());
+  // TODO
+
+  //
+  return *this;
 }
 
-template <class T>
-const T *AVLTreeIterator<T>::operator->() const
-{
-    assert(node());
-    return &node()->item();
+template <class T> AVLTreeIterator<T> AVLTreeIterator<T>::operator++(int) {
+  AVLTreeIterator<T> old = *this;
+  ++(*this);
+  return old;
 }
 
-template <class T>
-AVLTreeIterator<T> &AVLTreeIterator<T>::operator++()
-{
-    assert(node());
-    // TODO
+template <class T> AVLTreeIterator<T> &AVLTreeIterator<T>::operator--() {
+  assert(node());
+  // TODO
 
-    //
-    return *this;
+  //
+  return *this;
 }
 
-template <class T>
-AVLTreeIterator<T> AVLTreeIterator<T>::operator++(int)
-{
-    AVLTreeIterator<T> old = *this;
-    ++(*this);
-    return old;
-}
-
-template <class T>
-AVLTreeIterator<T> &AVLTreeIterator<T>::operator--()
-{
-    assert(node());
-    // TODO
-
-    //
-    return *this;
-}
-
-template <class T>
-AVLTreeIterator<T> AVLTreeIterator<T>::operator--(int)
-{
-    AVLTreeIterator<T> old = *this;
-    --(*this);
-    return old;
+template <class T> AVLTreeIterator<T> AVLTreeIterator<T>::operator--(int) {
+  AVLTreeIterator<T> old = *this;
+  --(*this);
+  return old;
 }

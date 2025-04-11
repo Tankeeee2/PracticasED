@@ -17,9 +17,7 @@
  * @brief ADT Stack.
  * Models a Stack using a simple list.
  */
-template <class T>
-class Stack
-{
+template <class T> class Stack {
 public:
   /** @name Life cycle.*/
   /** @{*/
@@ -30,9 +28,7 @@ public:
   Stack();
 
   /** @brief Destroy a Stack.**/
-  ~Stack()
-  {
-  }
+  ~Stack() {}
 
   /** @}*/
 

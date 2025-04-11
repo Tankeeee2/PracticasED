@@ -11,57 +11,39 @@
 #include <cassert>
 #include <queue.hpp>
 
-template <class T>
-Queue<T>::Queue()
-{
-    data_ = CDArray<T>();
-    assert(is_empty());
+template <class T> Queue<T>::Queue() {
+  data_ = CDArray<T>();
+  assert(is_empty());
 }
 
-template <class T>
-bool Queue<T>::is_empty() const
-{
-    return data_.size() == 0;
+template <class T> bool Queue<T>::is_empty() const { return data_.size() == 0; }
+
+template <class T> size_t Queue<T>::size() const { return data_.size(); }
+
+template <class T> T const &Queue<T>::front() const {
+  assert(!is_empty());
+  return data_.get(0);
 }
 
-template <class T>
-size_t Queue<T>::size() const
-{
-    return data_.size();
+template <class T> T const &Queue<T>::back() const {
+  assert(!is_empty());
+  return data_.get(size() - 1);
 }
 
-template <class T>
-T const& Queue<T>::front() const
-{
-    assert(!is_empty());
-    return data_.get(0);
-}
-
-template <class T>
-T const& Queue<T>::back() const
-{
-    assert(!is_empty());
-    return data_.get(size()-1);
-}
-
-template <class T>
-void Queue<T>::enque(const T& new_it)
-{
+template <class T> void Queue<T>::enque(const T &new_it) {
 #ifndef NDEBUG
-    size_t old_size = size();
+  size_t old_size = size();
 #endif
-    data_.push_back(new_it);
-    assert(back() == new_it);
-    assert(size() == (old_size + 1));
+  data_.push_back(new_it);
+  assert(back() == new_it);
+  assert(size() == (old_size + 1));
 }
 
-template <class T>
-void Queue<T>::deque()
-{
-    assert(!is_empty());
+template <class T> void Queue<T>::deque() {
+  assert(!is_empty());
 #ifndef NDEBUG
-    size_t old_size = size();
+  size_t old_size = size();
 #endif
-    data_.pop_front();
-    assert(size() == (old_size - 1));
+  data_.pop_front();
+  assert(size() == (old_size - 1));
 }

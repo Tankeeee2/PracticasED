@@ -9,10 +9,10 @@
  * Está prohibido su uso para cualquier otro objetivo.
  */
 #pragma once
+#include <avltree_iterator.hpp>
+#include <avltree_node.hpp>
 #include <iostream>
 #include <tuple>
-#include <avltree_node.hpp>
-#include <avltree_iterator.hpp>
 
 /**
  * @brief ADT AVLTree.
@@ -20,9 +20,7 @@
  * is_a_binary_search_tree()
  * is_a_balanced_tree()
  */
-template <class T>
-class AVLTree
-{
+template <class T> class AVLTree {
 public:
   /** @name Life cicle.*/
   /** @{*/
@@ -217,7 +215,8 @@ protected:
    * @brief Check the balanced tree invariant.
    * A tree is balanced is empty or the left and right subtrees are balanced and
    * its balance factor is in {-1,0,1}.
-   * @return true if left and right trees are balanced and this tree is balanced.
+   * @return true if left and right trees are balanced and this tree is
+   * balanced.
    */
   bool is_a_balanced_tree() const;
 
@@ -280,7 +279,8 @@ protected:
 
   /**
    * @brief make a balanced tree.
-   * Process from cursor's parent_ going up to the root doing rotations if needed.
+   * Process from cursor's parent_ going up to the root doing rotations if
+   * needed.
    */
   void make_balanced();
 
@@ -376,7 +376,6 @@ AVLTree<T> create_perfectly_balanced_bstree(std::vector<T> &data);
  * @pre tree != nullptr
  */
 template <class T>
-std::tuple<int, int>
-compute_min_max_branch_length(AVLTree<T> const &tree);
+std::tuple<int, int> compute_min_max_branch_length(AVLTree<T> const &tree);
 
 #include <avltree_imp.hpp>

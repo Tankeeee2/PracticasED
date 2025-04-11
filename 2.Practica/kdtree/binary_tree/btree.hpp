@@ -8,8 +8,8 @@
  */
 #pragma once
 
-#include <memory>
 #include <iostream>
+#include <memory>
 
 #include <btree_node.hpp>
 
@@ -17,9 +17,7 @@
  * @brief ADT BTree.
  * Models a BTree of T.
  */
-template <class T>
-class BTree
-{
+template <class T> class BTree {
 public:
   /** @name Life cycle.*/
   /** @{*/
@@ -62,9 +60,7 @@ public:
   BTree(std::istream &in) noexcept(false);
 
   /** @brief Destroy a BTree.**/
-  ~BTree()
-  {
-  }
+  ~BTree() {}
 
   /** @}*/
 

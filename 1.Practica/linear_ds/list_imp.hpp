@@ -8,295 +8,242 @@
  */
 #pragma once
 
+#include <cassert>
 #include <sstream>
 #include <stdexcept>
-#include <cassert>
 
 #include <list.hpp>
 
-template <class T>
-List<T>::List()
-{
-    // Create the dummy node and make it point to itself
-    head_ = DNode<T>::create();
-    head_->set_next(head_);
-    head_->set_prev(head_);
-    size_ = 0;
-    assert(is_empty());
+template <class T> List<T>::List() {
+  // Create the dummy node and make it point to itself
+  head_ = DNode<T>::create();
+  head_->set_next(head_);
+  head_->set_prev(head_);
+  size_ = 0;
+  assert(is_empty());
+}
+
+template <class T> List<T>::List(std::istream &in) noexcept(false) : List() {
+
+  // TODO
+  // Hint: use std::istringstream to convert from a "string" token value to a
+  // template T type value. Remember: throw std::runtime_error("Wrong input
+  // format.") exception when an input
+  //  format error was found.
+
+  //
+}
+
+template <class T> List<T>::~List() {
+  // Think. We are using smart pointers (shared_ptr) so the nodes will
+  // released automatically when the references going off.
+}
+
+template <class T> typename DNode<T>::Ref List<T>::dummy() const {
+  // TODO: recode with respect to your representation.
+  return nullptr;
+  //
+}
+
+template <class T> bool List<T>::is_empty() const { return size_ == 0; }
+
+template <class T> size_t List<T>::size() const { return size_; }
+
+template <class T> void List<T>::set_size(size_t new_size) {
+  // TODO
+
+  //
+  assert(size() == new_size);
+}
+
+template <class T> typename List<T>::iterator List<T>::begin() const {
+
+  // TODO: recode with respect to your representation.
+  return ListIterator<T>();
+  //
+}
+
+template <class T> typename List<T>::iterator List<T>::end() const {
+  // TODO: recode with respect to your representation.
+
+  return ListIterator<T>();
+  //
+}
+
+template <class T> T const &List<T>::front() const {
+  assert(!is_empty());
+  return head_->next()->item();
+}
+
+template <class T> T const &List<T>::back() const {
+  assert(!is_empty());
+
+  // TODO: recode with respect to your representation.
+  // Hint: use iterators.
+  T fixme{};
+  return fixme;
+  //
+}
+
+template <class T> void List<T>::fold(std::ostream &out) const {
+  // TODO
+
+  //
 }
 
 template <class T>
-List<T>::List(std::istream &in) noexcept(false) : List()
-{
-
-    // TODO
-    // Hint: use std::istringstream to convert from a "string" token value to a template
-    // T type value.
-    // Remember: throw std::runtime_error("Wrong input format.") exception when an input
-    //  format error was found.
-
-    //
-}
-
-template <class T>
-List<T>::~List()
-{
-    // Think. We are using smart pointers (shared_ptr) so the nodes will
-    // released automatically when the references going off.
-}
-
-template <class T>
-typename DNode<T>::Ref List<T>::dummy() const
-{
-    // TODO: recode with respect to your representation.
-    return nullptr;
-    //
-}
-
-template <class T>
-bool List<T>::is_empty() const
-{
-    return size_ == 0;
-}
-
-template <class T>
-size_t List<T>::size() const
-{
-    return size_;
-}
-
-template <class T>
-void List<T>::set_size(size_t new_size)
-{
-    // TODO
-
-    //
-    assert(size() == new_size);
-}
-
-template <class T>
-typename List<T>::iterator List<T>::begin() const
-{
-
-    // TODO: recode with respect to your representation.
-    return ListIterator<T>();
-    //
-}
-
-template <class T>
-typename List<T>::iterator List<T>::end() const
-{
-    // TODO: recode with respect to your representation.
-
-    return ListIterator<T>();
-    //
-}
-
-template <class T>
-T const &List<T>::front() const
-{
-    assert(!is_empty());
-    return head_->next()->item();
-}
-
-template <class T>
-T const &List<T>::back() const
-{
-    assert(!is_empty());
-
-    // TODO: recode with respect to your representation.
-    // Hint: use iterators.
-    T fixme{};
-    return fixme;
-    //
-}
-
-template <class T>
-void List<T>::fold(std::ostream &out) const
-{
-    // TODO
-
-    //
-}
-
-template <class T>
-void List<T>::hook(typename DNode<T>::Ref node, typename DNode<T>::Ref pos)
-{
+void List<T>::hook(typename DNode<T>::Ref node, typename DNode<T>::Ref pos) {
 #ifndef NDEBUG
-    auto old_size = size();
+  auto old_size = size();
 #endif
-    // Connect node's pointers
-    node->set_prev(pos->prev());
-    node->set_next(pos);
-    // Update surrounding nodes
-    pos->prev()->set_next(node);
-    pos->set_prev(node);
-    // Update size
-    size_++;
-    assert(size() == old_size + 1);
+  // Connect node's pointers
+  node->set_prev(pos->prev());
+  node->set_next(pos);
+  // Update surrounding nodes
+  pos->prev()->set_next(node);
+  pos->set_prev(node);
+  // Update size
+  size_++;
+  assert(size() == old_size + 1);
 }
 
-template <class T>
-void List<T>::unhook(typename DNode<T>::Ref pos)
-{
+template <class T> void List<T>::unhook(typename DNode<T>::Ref pos) {
 #ifndef NDEBUG
-    auto old_size = size();
+  auto old_size = size();
 #endif
-    // Connect surrounding nodes
-    pos->prev()->set_next(pos->next());
-    pos->next()->set_prev(pos->prev());
-    // Update size
-    size_--;
-    assert(size() == old_size - 1);
+  // Connect surrounding nodes
+  pos->prev()->set_next(pos->next());
+  pos->next()->set_prev(pos->prev());
+  // Update size
+  size_--;
+  assert(size() == old_size - 1);
 }
 
 template <class T>
-typename List<T>::iterator List<T>::insert(typename List<T>::iterator const &pos,
-                                           T const &it)
-{
+typename List<T>::iterator
+List<T>::insert(typename List<T>::iterator const &pos, T const &it) {
 #ifndef NDEBUG
-    auto old_is_empty = is_empty();
-    auto old_size = size();
-    auto old_pos_prev = pos.prev();
+  auto old_is_empty = is_empty();
+  auto old_size = size();
+  auto old_pos_prev = pos.prev();
 #endif
-    iterator ret_v;
-    // TODO
-    // Hint: delegate in hook.
+  iterator ret_v;
+  // TODO
+  // Hint: delegate in hook.
 
-    //
-    assert(!old_is_empty || (front() == it && back() == it));
-    assert(old_is_empty || ret_v.next() == pos);
-    assert(old_is_empty || old_pos_prev == ret_v.prev());
-    assert(size() == (old_size + 1));
-    return ret_v;
+  //
+  assert(!old_is_empty || (front() == it && back() == it));
+  assert(old_is_empty || ret_v.next() == pos);
+  assert(old_is_empty || old_pos_prev == ret_v.prev());
+  assert(size() == (old_size + 1));
+  return ret_v;
 }
 
 template <class T>
-typename List<T>::iterator List<T>::remove(List<T>::iterator const &pos)
-{
-    assert(!is_empty());
+typename List<T>::iterator List<T>::remove(List<T>::iterator const &pos) {
+  assert(!is_empty());
 #ifndef NDEBUG
-    auto old_size = size();
-    auto old_pos_next = pos.next();
-    auto old_pos_prev = pos.prev();
+  auto old_size = size();
+  auto old_pos_next = pos.next();
+  auto old_pos_prev = pos.prev();
 #endif
-    iterator ret_v;
-    // TODO
-    // Hint: delegate in unkook
+  iterator ret_v;
+  // TODO
+  // Hint: delegate in unkook
 
-    //
-    assert(ret_v == old_pos_next);
-    assert(ret_v.prev() == old_pos_prev);
-    assert(size() == (old_size - 1));
-    return ret_v;
+  //
+  assert(ret_v == old_pos_next);
+  assert(ret_v.prev() == old_pos_prev);
+  assert(size() == (old_size - 1));
+  return ret_v;
 }
 
-template <class T>
-void List<T>::push_front(T const &new_it)
-{
+template <class T> void List<T>::push_front(T const &new_it) {
 #ifndef NDEBUG
-    size_t old_size = size();
+  size_t old_size = size();
 #endif
-    // Insert at beginning (after dummy node)
-    auto new_node = DNode<T>::create(new_it);
-    hook(new_node, head_->next());
-    assert(front() == new_it);
-    assert(size() == (old_size + 1));
+  // Insert at beginning (after dummy node)
+  auto new_node = DNode<T>::create(new_it);
+  hook(new_node, head_->next());
+  assert(front() == new_it);
+  assert(size() == (old_size + 1));
 }
 
-template <class T>
-void List<T>::push_back(T const &new_it)
-{
+template <class T> void List<T>::push_back(T const &new_it) {
 #ifndef NDEBUG
-    size_t old_size = size();
+  size_t old_size = size();
 #endif
 
-    assert(back() == new_it);
-    assert(size() == (old_size + 1));
+  assert(back() == new_it);
+  assert(size() == (old_size + 1));
 }
 
-template <class T>
-void List<T>::pop_front()
-{
-    assert(!is_empty());
+template <class T> void List<T>::pop_front() {
+  assert(!is_empty());
 #ifndef NDEBUG
-    size_t old_size = size();
+  size_t old_size = size();
 #endif
-    unhook(head_->next());
-    assert(size() == (old_size - 1));
+  unhook(head_->next());
+  assert(size() == (old_size - 1));
 }
 
-template <class T>
-void List<T>::pop_back()
-{
-    assert(!is_empty());
+template <class T> void List<T>::pop_back() {
+  assert(!is_empty());
 #ifndef NDEBUG
-    size_t old_size = size();
-    auto old_end_prev_prev = end().prev().prev();
+  size_t old_size = size();
+  auto old_end_prev_prev = end().prev().prev();
 #endif
 
-    assert(is_empty() || end().prev() == old_end_prev_prev);
-    assert(size() == (old_size - 1));
+  assert(is_empty() || end().prev() == old_end_prev_prev);
+  assert(size() == (old_size - 1));
 }
 
 template <class T>
-typename List<T>::iterator List<T>::find(T const &it, List<T>::iterator const &from) const
-{
-    iterator ret_v;
+typename List<T>::iterator List<T>::find(T const &it,
+                                         List<T>::iterator const &from) const {
+  iterator ret_v;
 
-    assert(ret_v == end() || ret_v.item() == it);
-    return ret_v;
+  assert(ret_v == end() || ret_v.item() == it);
+  return ret_v;
 }
 
 template <class T>
-void List<T>::splice(iterator const &pos, List<T> &list2,
-                     iterator const &first, iterator const &last)
-{
+void List<T>::splice(iterator const &pos, List<T> &list2, iterator const &first,
+                     iterator const &last) {
 #ifndef NDEBUG
-    size_t old_size = size();
-    size_t old_l2_size = list2.size();
-    auto old_range_size = first.distance(last);
+  size_t old_size = size();
+  size_t old_l2_size = list2.size();
+  auto old_range_size = first.distance(last);
 #endif
 
-    assert(size() == (old_size + old_range_size));
-    assert(list2.size() == (old_l2_size - old_range_size));
+  assert(size() == (old_size + old_range_size));
+  assert(list2.size() == (old_l2_size - old_range_size));
+}
+
+template <class T> void List<T>::splice(iterator const &pos, List<T> &list2) {
+#ifndef NDEBUG
+  size_t old_size = size();
+  auto old_list2_size = list2.size();
+#endif
+
+  assert(size() == (old_size + old_list2_size));
+  assert(list2.size() == 0);
+  assert(list2.is_empty());
 }
 
 template <class T>
-void List<T>::splice(iterator const &pos, List<T> &list2)
-{
+void List<T>::splice(iterator const &pos, List<T> &list2, iterator const &i) {
 #ifndef NDEBUG
-    size_t old_size = size();
-    auto old_list2_size = list2.size();
+  size_t old_size = size();
+  auto old_list2_size = list2.size();
 #endif
 
-    assert(size() == (old_size + old_list2_size));
-    assert(list2.size() == 0);
-    assert(list2.is_empty());
-}
-
-template <class T>
-void List<T>::splice(iterator const &pos, List<T> &list2, iterator const &i)
-{
-#ifndef NDEBUG
-    size_t old_size = size();
-    auto old_list2_size = list2.size();
-#endif
-
-    assert(size() == (old_size + 1));
-    assert(list2.size() == (old_list2_size - 1));
+  assert(size() == (old_size + 1));
+  assert(list2.size() == (old_list2_size - 1));
 }
 
 template <class T>
 template <class Compare>
-void List<T>::merge(List<T> &other, Compare comp)
-{
+void List<T>::merge(List<T> &other, Compare comp) {}
 
-}
-
-template <class T>
-template <class Compare>
-void List<T>::sort(Compare comp)
-{
-
-}
+template <class T> template <class Compare> void List<T>::sort(Compare comp) {}

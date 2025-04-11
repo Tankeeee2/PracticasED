@@ -15,8 +15,8 @@
 
 #include <cassert>
 #include <exception>
-#include <memory>
 #include <iostream>
+#include <memory>
 #include <queue>
 
 #include <btree.hpp>
@@ -30,8 +30,7 @@
  * @return the tree's height or -1 if it is a empty tree.
  * @pre t!=nullptr
  */
-template <class T>
-int compute_height(const BTree<T> &t);
+template <class T> int compute_height(const BTree<T> &t);
 
 /**
  * @brief Compute the number of nodes in the tree.
@@ -40,8 +39,7 @@ int compute_height(const BTree<T> &t);
  * @return the number of nodes in the tree.
  * @pre t!=nullptr
  */
-template <class T>
-size_t compute_size(const BTree<T> &t);
+template <class T> size_t compute_size(const BTree<T> &t);
 
 /**
  * @brief Prefix processing of a binary tree
@@ -145,8 +143,7 @@ std::ostream &print_postfix(std::ostream &out, const BTree<T> &tree);
  * @return the stream.
  */
 template <class T>
-std::ostream &print_breadth_first(std::ostream &out,
-                                  const BTree<T> &tree);
+std::ostream &print_breadth_first(std::ostream &out, const BTree<T> &tree);
 
 /**
  * @brief Search a item value in a binary tree following a pre-fix order.
@@ -197,8 +194,7 @@ bool search_breadth_first(const BTree<T> &tree, const T &it, size_t &count);
  * @param tree is the tree to be checked.
  * @return true if the input tree is in order.
  */
-template <class T>
-bool check_btree_in_order(const BTree<T> &tree);
+template <class T> bool check_btree_in_order(const BTree<T> &tree);
 
 /**
  * @brief Search a item into the tree.
@@ -210,8 +206,7 @@ bool check_btree_in_order(const BTree<T> &tree);
  * @pre check_btree_in_order(tree)
  * @return true if the value is in the tree.
  */
-template <class T>
-bool has_in_order(const BTree<T> &tree, T const &v);
+template <class T> bool has_in_order(const BTree<T> &tree, T const &v);
 
 /**
  * @brief Insert in order a value intro a binary tree.
@@ -224,7 +219,6 @@ bool has_in_order(const BTree<T> &tree, T const &v);
  * @pre check_btree_in_order(tree)
  * @post has_in_order(tree, v)
  */
-template <class T>
-void insert_in_order(BTree<T> &&tree, T const &v);
+template <class T> void insert_in_order(BTree<T> &&tree, T const &v);
 
 #include "btree_utils_imp.hpp"
