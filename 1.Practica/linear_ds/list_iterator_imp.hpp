@@ -13,7 +13,7 @@
 template <class T> ListIterator<T>::~ListIterator() {}
 
 template <class T> bool ListIterator<T>::is_valid() const {
-  return node_ != nullptr; // Cambiamos la validación
+  return node_ != nullptr;
 }
 
 template <class T> ListIterator<T>::ListIterator() {
