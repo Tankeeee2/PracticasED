@@ -52,37 +52,36 @@
 // TODO: define the interface for the proposed ADT.
 // Remember: here we want interfaces not implementations.
 
-template <class T>
-class Vector2D
-{
+template <class T> class Vector2D {
 public:
-    /** @name Public types.*/
+  /** @name Public types.*/
 
-    /** @name Life cycle.*/
-    /** @{*/
-    Vector2D();
-    Vector2D(T const &x_v, T const &y_v);
-    ~Vector2D();
-    /** @}*/
+  /** @name Life cycle.*/
+  /** @{*/
+  Vector2D();
+  Vector2D(T const &x_v, T const &y_v);
+  ~Vector2D();
+  /** @}*/
 
-    /** @name Observers.*/
-    /** @{*/
-    T const &x() const;
-    T const &y() const;
-    /** @}*/
+  /** @name Observers.*/
+  /** @{*/
+  T const &x() const;
+  T const &y() const;
+  /** @}*/
 
-    /** @name Modifiers.*/
-    /** @{*/
-    void set_x(T const &x_v);
-    void set_y(T const &y_v);
-    void add(const Vector2D<T> &o);
-    /** @}*/
+  /** @name Modifiers.*/
+  /** @{*/
+  void set_x(T const &x_v);
+  void set_y(T const &y_v);
+  void add(const Vector2D<T> &o);
+  /** @}*/
 
 protected:
-    // The representation.
-    // TODO: choose one.
+  // The representation.
+  // TODO: choose one.
 
-    //
+  T x_, y_;
+  //
 };
 
 //
