@@ -39,9 +39,7 @@ template <class K, class V> size_t HashTable<K, V>::size() const {
 template <class K, class V> float HashTable<K, V>::load_factor() const {
   float ret_v = 0.0f;
   // TODO
-  if (size() == 0) { // Evitar división por cero si la tabla está vacía.
-    ret_v = 0.0f;
-  } else {
+  if (size() != 0) {
     ret_v = static_cast<float>(used_entries_) / static_cast<float>(size());
   }
   //
@@ -79,25 +77,33 @@ HashTableIterator<K, V> HashTable<K, V>::end() const {
 
 template <class K, class V>
 size_t HashTable<K, V>::find_position(K const &k) const {
+
   assert(load_factor() < 1.0f);
   size_t idx = 0;
   // TODO
+  size_t table_capacity = size();
+  std::uint64_t key_as_int = key_to_int_(k);
   size_t i = 0;
   bool found_slot = false;
-  std::uint64_t key_as_int = key_to_int_(k);
-  while (!found_slot &&
-         i < size()) { // Iterar como máximo 'size' veces (m intentos de prueba)
+
+  while (!found_slot && i < table_capacity) {
     idx = hash_->operator()(key_as_int, i);
 
-    if (!entry(idx).is_valid() ||
-        (entry(idx).is_valid() && entry(idx).key() == k)) {
+    const HashTableEntry<K, V> &current_entry = entry(idx);
 
+    if (current_entry.is_empty() ||
+        (current_entry.is_valid() && current_entry.key() == k) ||
+        (current_entry.is_deleted() && current_entry.key() == k)) {
       found_slot = true;
     } else {
       i++;
     }
   }
+
+  //
+
   assert(0 <= idx && idx < size());
+
   return idx;
 }
 
@@ -120,39 +126,34 @@ template <class K, class V>
 HashTableIterator<K, V> HashTable<K, V>::insert(K const &k, V const &v) {
   assert(load_factor() <= 0.5f);
   HashTableIterator<K, V> ret_v = end();
-  const size_t current_size = size();
-  // TODO
-  // Remember: increment the number of used entries only when an
-  //    empty entry was used.
-  // Remember: you must call to rehash before inserting a new entry to avoid
-  //    a load factor greater than 0.5.
-  // Remember: if a rehashing was done (current_size != new size returned by
-  //    rehash function), you need to find the new location of the inserted key.
-  size_t current_table_size = size();
-  size_t idx_after_potential_rehash;
-  size_t tentative_idx = find_position(k);
-  bool is_new_insertion =
-      !entry(tentative_idx).is_valid() || entry(tentative_idx).key() != k;
 
-  is_new_insertion = !entry(tentative_idx).is_valid();
-  if (is_new_insertion && (static_cast<float>(used_entries_ + 1) /
-                           static_cast<float>(current_table_size)) > 0.5f) {
+  // Buscar posición para la clave
+  size_t idx = find_position(k);
+
+  // Verificar si necesitamos rehash
+  bool need_new_entry = entry(idx).is_empty() ||
+                        (entry(idx).is_deleted() && entry(idx).key() != k);
+
+  if (need_new_entry && ((used_entries_ + 1.0f) / size() > 0.5f)) {
     rehash();
-    idx_after_potential_rehash = find_position(k);
-  } else {
-    idx_after_potential_rehash = tentative_idx;
+    idx = find_position(k);
   }
 
-  if (!entry(idx_after_potential_rehash).is_valid()) {
-    entry(idx_after_potential_rehash) = HashTableEntry<K, V>(k, v);
+  // Realizar la inserción
+  if (entry(idx).is_valid() && !entry(idx).is_deleted()) {
+    // La entrada ya existe y es válida, actualizar valor
+    entry(idx).set_value(v);
+  } else if (entry(idx).is_deleted() && entry(idx).key() == k) {
+    // La entrada está eliminada pero tiene la misma clave, reutilizar
+    entry(idx) = HashTableEntry<K, V>(k, v);
+  } else {
+    // La entrada está vacía o eliminada con otra clave, crear nueva
+    entry(idx) = HashTableEntry<K, V>(k, v);
     used_entries_++;
-  } else {
-
-    entry(idx_after_potential_rehash).set_value(v);
   }
 
-  ret_v = HashTableIterator<K, V>(this, idx_after_potential_rehash);
-  //
+  ret_v = HashTableIterator<K, V>(this, idx);
+
   assert(ret_v.is_valid());
   assert(ret_v.key() == k);
   assert(ret_v.value() == v);
@@ -169,8 +170,10 @@ void HashTable<K, V>::remove(HashTableIterator<K, V> &iter) {
   // TODO
   // Remember: we are using a mark to sign "deleted".
   assert(iter.table() == this);
-  entry(iter.idx_).set_deleted();
-  used_entries_--;
+  if (entry(iter.idx_).is_valid() && !entry(iter.idx_).is_deleted()) {
+    entry(iter.idx_).set_deleted();
+    // used_entries_--;
+  }
   iter = end();
   //
   assert(!iter.is_valid());
@@ -182,8 +185,8 @@ template <class K, class V> size_t HashTable<K, V>::rehash() {
   // Remember: rehash when load_factor > 0.5
   // Remember: we use a 2 factor to grown the current size.
   // Remember: a new hash function will be picked at random from the Universal
-  // Family. Remember: reset the number of used entries to zero before inserting
-  // the old valid entries in the new table.
+  // Family. Remember: reset the number of used entries to zero before
+  // inserting the old valid entries in the new table.
   std::vector<HashTableEntry<K, V>> old_table = table_;
   size_t old_m = size();
   size_t new_m = (old_m == 0) ? 2 : old_m * 2;
@@ -196,7 +199,7 @@ template <class K, class V> size_t HashTable<K, V>::rehash() {
 
   used_entries_ = 0;
   for (size_t i = 0; i < old_table.size(); ++i) {
-    if (old_table[i].is_valid()) {
+    if (old_table[i].is_valid() && !old_table[i].is_deleted()) {
 
       this->insert(old_table[i].key(), old_table[i].value());
     }
@@ -211,8 +214,8 @@ HashTableEntry<K, V> const &HashTable<K, V>::entry(size_t idx) const {
 
   assert(idx < size());
   // TODO: recode according to your representation.
-
   return table_[idx];
+
   //
 }
 
@@ -221,5 +224,6 @@ HashTableEntry<K, V> &HashTable<K, V>::entry(size_t idx) {
   assert(idx < size());
   // TODO: recode according to your representation.
   return table_[idx];
+
   //
 }

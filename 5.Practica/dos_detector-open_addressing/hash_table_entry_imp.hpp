@@ -15,7 +15,7 @@
 
 template <class K, class V> HashTableEntry<K, V>::HashTableEntry() {
   // TODO
-
+  state_ = EMPTY;
   //
   assert(is_empty());
 }
@@ -23,8 +23,8 @@ template <class K, class V> HashTableEntry<K, V>::HashTableEntry() {
 template <class K, class V>
 HashTableEntry<K, V>::HashTableEntry(const K &k, const V &v) {
   // TODO
-  K key_ = k;
-  V value_ = v;
+  state_ = VALID;
+  set(k, v);
   //
   assert(is_valid());
   assert(key() == k);
@@ -34,6 +34,8 @@ HashTableEntry<K, V>::HashTableEntry(const K &k, const V &v) {
 template <class K, class V> bool HashTableEntry<K, V>::is_valid() const {
   bool ret_val = false;
   // TODO
+  if (state_ == VALID)
+    ret_val = true;
 
   //
   return ret_val;
@@ -42,6 +44,8 @@ template <class K, class V> bool HashTableEntry<K, V>::is_valid() const {
 template <class K, class V> bool HashTableEntry<K, V>::is_empty() const {
   bool ret_val = false;
   // TODO
+  if (state_ == EMPTY)
+    ret_val = true;
 
   //
   return ret_val;
@@ -50,7 +54,8 @@ template <class K, class V> bool HashTableEntry<K, V>::is_empty() const {
 template <class K, class V> bool HashTableEntry<K, V>::is_deleted() const {
   bool ret_val = false;
   // TODO
-
+  if (state_ == DELETED)
+    ret_val = true;
   //
   return ret_val;
 }
@@ -58,16 +63,15 @@ template <class K, class V> bool HashTableEntry<K, V>::is_deleted() const {
 template <class K, class V> K const &HashTableEntry<K, V>::key() const {
   assert(!is_empty());
   // TODO: recode according to your representation.
-  K aux;
-  return aux;
+  return key_;
   //
 }
 
 template <class K, class V>
 void HashTableEntry<K, V>::set(const K &k, const V &v) {
   // TODO
-  K key_ = k;
-  V value_ = v;
+  key_ = k;
+  value_ = v;
   //
   assert(is_valid());
   assert(key() == k);
@@ -76,8 +80,8 @@ void HashTableEntry<K, V>::set(const K &k, const V &v) {
 
 template <class K, class V> V const &HashTableEntry<K, V>::value() const {
   // TODO: recode according to your representation.
-  V aux;
-  return aux;
+
+  return value_;
   //
 }
 
@@ -86,7 +90,7 @@ void HashTableEntry<K, V>::set_value(const V &new_v) {
   assert(is_valid());
 
   // TODO: recode according to your representation.
-
+  value_ = new_v;
   //
   assert(is_valid());
   assert(value() == new_v);
@@ -95,7 +99,7 @@ void HashTableEntry<K, V>::set_value(const V &new_v) {
 template <class K, class V> void HashTableEntry<K, V>::set_deleted() {
   assert(is_valid());
   // TODO
-
+  state_ = DELETED;
   //
   assert(is_deleted());
 }

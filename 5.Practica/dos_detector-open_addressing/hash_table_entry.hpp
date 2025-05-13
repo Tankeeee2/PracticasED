@@ -114,7 +114,9 @@ protected:
 
   // TODO
   // Hint: consider the use of std::pair to store the <K,V> pair.
-
+  EntryState state_;
+  K key_;
+  V value_;
   //
 };
 
