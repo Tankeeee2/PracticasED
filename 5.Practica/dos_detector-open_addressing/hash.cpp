@@ -208,7 +208,8 @@ size_t QPHash::operator()(std::uint64_t k, size_t iter) const {
     set_state(ret_v);
   } else {
     // c1 = c2 = 1/2, so: h(k, i) = (h(k) + i/2 + i^2/2) % m
-    ret_v = (state() + iter / 2 + (iter * iter) / 2) % m();
+    std::uint64_t offset = (iter * iter + iter) / 2;
+    ret_v = (state() + offset) % m();
   }
   //
   return ret_v;
@@ -305,11 +306,16 @@ size_t RHash::operator()(std::uint64_t k, size_t iter) const {
   // you can use state()/set_state to get/save the current hash value to avoid
   // recompute it when
   //       a collision happened.
-  if (iter < hash_fs().size()) {
-    ret_v = hash_fs()[iter](k);
+
+  if (iter == 0) {
+    ret_v = this->hash()(k);
+    set_state(ret_v);
+  } else if ((iter - 1) < hash_fs().size()) {
+    ret_v = hash_fs()[iter - 1](k);
     set_state(ret_v);
   } else {
-    ret_v = (state() + (iter - hash_fs().size() + 1)) % m();
+    size_t linear_probe_offset = iter - hash_fs().size();
+    ret_v = (state() + linear_probe_offset) % m();
   }
   //
 
