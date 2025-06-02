@@ -41,11 +41,61 @@ a_star_algorithm(Graph<T, float> &g,
     // TODO: initialize the predecessors and distances vectors.
     // Remember: each vertex is predecessor of itself with distance infinite.
 
+    size_t n = g.num_vertices();
+    predecessors.resize(n);
+    distances.assign(n, std::numeric_limits<float>::infinity());
+
+    for (size_t i = 0; i < n; ++i)
+    {
+        predecessors[i] = i;
+    }
+
+    std::vector<Tuple> empty;
+    PriorityQueue<Tuple> q(empty, std::less<Tuple>());
+
+    size_t start_label = start->label();
+    size_t end_label = end->label();
+    distances[start_label] = 0.0;
+    q.enqueue({H(start, end), 0.0, start_label, start_label});
+
+    g.reset(false);
+
     //
 
     // TODO: implement the A* algorithm.
     // Note: you can use std::priority_queue if you have not implemented
     // the ADT PriorityQueue.
+
+    while (!q.is_empty() && !end->is_visited())
+    {
+        auto [f, g_cost, u_label, pred] = q.front();
+        q.dequeue();
+
+        auto u = g.vertex(u_label);
+        if (!u->is_visited())
+        {
+            predecessors[u_label] = pred;
+            distances[u_label] = g_cost;
+
+            u->set_visited(true);
+            auto e = g.edges_begin(g.get_iterator(u));
+            auto e_end = g.edges_end(g.get_iterator(u));
+
+            while (e != e_end)
+            {
+                auto edge = *e;
+                auto v = edge->other(u);
+                if (!v->is_visited())
+                {
+                    float new_f = distances[u_label] + edge->item() + H(v, end);
+                    float new_cost = distances[u_label] + edge->item();
+                    q.enqueue({new_f, new_cost, v->label(), u_label});
+                }
+                ++e;
+            }
+        }
+        ++iterations;
+    }
 
     //
     return iterations;
@@ -60,6 +110,16 @@ a_star_path(size_t src, size_t dst,
     assert(predecessors[src] == src);
     std::list<size_t> path;
     // TODO
+
+    if (dst != src && predecessors[dst] == dst)
+    {
+        return {};
+    }
+    for (size_t u = dst; u != src; u = predecessors[u])
+    {
+        path.push_front(u);
+    }
+    path.push_front(src);
 
     //
     return path;

@@ -17,7 +17,9 @@ template <class T, class E> Graph<T, E>::Graph(bool directed) {
   next_label_ = 0;
 
   // TODO
+
   is_directed_ = directed;
+
   //
 
   assert(is_empty());
@@ -28,7 +30,9 @@ template <class T, class E> Graph<T, E>::Graph(bool directed) {
 template <class T, class E> bool Graph<T, E>::is_empty() const {
   // TODO: fixme
   // Remember: the graph is empty if there are not vertices.
+
   return vertices_.empty();
+
   //
 }
 
@@ -49,12 +53,15 @@ template <class T, class E> size_t Graph<T, E>::num_edges() const {
   // TODO
   // Remember: is the graph is undirected the edge (u:v) was duplicated in
   // the incident list of u an v.
-  for (auto it = vertices_.begin(); it != vertices_.end(); ++it) {
-    ret_v += it->second.size();
+
+  for (auto const &v : vertices_) {
+    ret_v += v.second.size();
   }
 
-  if (!is_directed_)
-    ret_v /= 2;
+  if (!is_directed()) {
+    ret_v = ret_v / 2;
+  }
+
   //
   return ret_v;
 }
@@ -75,13 +82,14 @@ template <class T, class E> bool Graph<T, E>::has(EdgeRef const &e) const {
   // TODO
   // Hint: use get_iterator() to get an iterator points to the first vertex.
   auto u_iter = get_iterator(e->first());
+  auto edge_iter = edges_begin(u_iter);
 
-  for (auto edge_it = edges_begin(u_iter); edge_it != edges_end(u_iter);
-       ++edge_it) {
-    if (*edge_it == e) {
+  while (edge_iter != edges_end(u_iter)) {
+    if (*edge_iter == e) {
       ret_v = true;
       break;
     }
+    ++edge_iter;
   }
   //
   return ret_v;
@@ -96,10 +104,9 @@ bool Graph<T, E>::is_adjacent(VertexRef const &u, VertexRef const &v) const {
   // Remember: a vertex u is adjacent to v if there is a edge (u,v) or
   // if the graph is undirected, there is a edge (v,u).
   // Hint: use the method edge(x, y).
-  if (edge(u, v) != nullptr)
-    return true;
 
-  return false;
+  return edge(u, v) != nullptr;
+
   //
 }
 
@@ -113,23 +120,16 @@ typename Graph<T, E>::EdgeRef Graph<T, E>::edge(VertexRef const &u,
   // TODO
   // Remember: if the graph is undirected, the edge (u,v) is the same as (v,u).
   // Hint: use vertex and edge iterators.
-  auto u_iter = get_iterator(u);
 
-  for (auto edge_it = edges_begin(u_iter); edge_it != edges_end(u_iter);
-       ++edge_it) {
-    EdgeRef e = *edge_it;
-    if (is_directed_) {
-      if (e->first() == u && e->second() == v) {
-        ret_v = e;
-        break;
-      }
-    } else {
-      if (e->has(v)) {
-        ret_v = e;
-        break;
-      }
+  auto u_iter = get_iterator(u);
+  for (auto edge_iter = edges_begin(u_iter); edge_iter != edges_end(u_iter);
+       ++edge_iter) {
+    if ((*edge_iter)->has(v)) {
+      ret_v = *edge_iter;
+      break;
     }
   }
+
   //
 
   assert(!ret_v || (!is_directed() || ret_v->first() == u));
@@ -142,13 +142,14 @@ typename Graph<T, E>::EdgeRef Graph<T, E>::edge(VertexRef const &u,
 template <class T, class E> void Graph<T, E>::reset(bool state) {
   // TODO
   // Remember: Both vertices and edges has a visited flag to be reset.
-  for (auto v_it = vertices_.begin(); v_it != vertices_.end(); ++v_it) {
-    v_it->first->set_visited(state);
 
-    for (auto e_it = v_it->second.begin(); e_it != v_it->second.end(); ++e_it) {
-      (*e_it)->set_visited(state);
+  for (auto &vertex_pair : vertices_) {
+    vertex_pair.first->set_visited(state);
+    for (auto &edge : vertex_pair.second) {
+      edge->set_visited(state);
     }
   }
+
   //
 }
 
@@ -157,12 +158,14 @@ typename Graph<T, E>::VertexRef
 Graph<T, E>::find_vertex(typename T::key_t const &value) const {
   VertexRef ret_v = nullptr;
   // TODO
-  for (auto it = vertices_.begin(); it != vertices_.end(); ++it) {
-    if (it->first->item().key() == value) {
-      ret_v = it->first;
+
+  for (auto iter = vertices_begin(); iter != vertices_end(); ++iter) {
+    if ((*iter)->item().key() == value) {
+      ret_v = *iter;
       break;
     }
   }
+
   //
   assert(ret_v == nullptr || ret_v->item().key() == value);
   return ret_v;
@@ -172,12 +175,14 @@ template <class T, class E>
 typename Graph<T, E>::VertexRef Graph<T, E>::vertex(size_t value) const {
   VertexRef ret_v = nullptr;
   // TODO
-  for (auto it = vertices_.begin(); it != vertices_.end(); ++it) {
-    if (it->first->label() == value) {
-      ret_v = it->first;
+
+  for (auto iter = vertices_begin(); iter != vertices_end(); ++iter) {
+    if ((*iter)->label() == value) {
+      ret_v = *iter;
       break;
     }
   }
+
   //
   assert(ret_v == nullptr || ret_v->label() == value);
   return ret_v;
@@ -193,13 +198,10 @@ typename Graph<T, E>::VertexRef Graph<T, E>::add_vertex(T const &v) {
   // TODO
   // Remember: use push_back to add the vertex to the list of vertices.
   // Remember: updated the next label attribute to next integer.
-  ret_v = Vertex<T>::create(next_label_, v);
 
-  edges_list_t empty_list;
+  ret_v = Vertex<T>::create(next_label_++, v);
+  vertices_.push_back(std::make_pair(ret_v, edges_list_t()));
 
-  vertices_.push_back(std::make_pair(ret_v, empty_list));
-
-  next_label_++;
   //
   assert(next_label_ == (old_next_label + 1));
   assert(ret_v->label() == (old_next_label));
@@ -219,31 +221,28 @@ void Graph<T, E>::remove_vertex(const VertexRef &v) {
   // Remember: you must also remove all edges incident in this vertex.
   // Remember: if the graph is undirected, the edge (u,v) was duplicated in
   // the incident list of u and v.
-  for (auto it = vertices_.begin(); it != vertices_.end();) {
-    if (it->first == v) {
-      ++it;
-      continue;
-    }
 
-    // Eliminar aristas que conecten
-    auto &edges_list = it->second;
-    for (auto e_it = edges_list.begin(); e_it != edges_list.end();) {
-      if ((*e_it)->has(v)) {
-        e_it = edges_list.erase(e_it);
-      } else {
-        ++e_it;
+  for (auto it = vertices_begin(); it != vertices_end(); ++it) {
+    if (*it != v) {
+      auto &edges = it.it_->second;
+      for (auto edge_it = edges.begin(); edge_it != edges.end();) {
+        if ((*edge_it)->has(v)) {
+          edge_it = edges.erase(edge_it);
+        } else {
+          ++edge_it;
+        }
       }
     }
-
-    ++it;
   }
-  // Eliminar el vértice de la lista
+
+  // Remove the vertex itself
   for (auto it = vertices_.begin(); it != vertices_.end(); ++it) {
     if (it->first == v) {
       vertices_.erase(it);
       break;
     }
   }
+
   //
   assert(!has(v));
   assert(num_vertices() == (old_num_vertices - 1));
@@ -263,20 +262,26 @@ Graph<T, E>::add_edge(VertexRef const &u, VertexRef const &v, E const &item) {
 
   // TODO
   // Remember: if the graph is directed, the edge only is incident on
-  // the u end but if it is not directed, the edge is incident on both u and
-  // v ends. Hint: use get_iterator() to get the iterator to
+  // the u end but if it is not directed, the edge is incident on both u and v
+  // ends. Hint: use get_iterator() to get the iterator to
   //   the adjacent list of vertices u and v.
   // Remember: We add the new edge to the end of adjacent lists.
+  if (edge(u, v) != nullptr) {
+    return edge(u, v); // Ya existe
+  }
+
   ret_v = Edge<T, E>::create(u, v, item);
 
+  // Add edge to u's adjacency list
   auto u_iter = get_iterator(u);
-
   u_iter.it_->second.push_back(ret_v);
 
+  // If undirected, add edge to v's adjacency list
   if (!is_directed_) {
     auto v_iter = get_iterator(v);
     v_iter.it_->second.push_back(ret_v);
   }
+
   //
   assert(num_edges() == (old_num_edges + 1));
   assert(!ret_v->is_visited());
@@ -302,30 +307,30 @@ void Graph<T, E>::remove_edge(VertexRef const &u, VertexRef const &v) {
   // TODO
   // Remember: if the graph is undirected, the edge u-v was duplicated as
   // incident in the u and v adjacent lists.
+
   EdgeRef e = edge(u, v);
   if (e == nullptr)
     return;
 
   auto u_iter = get_iterator(u);
-  auto &u_edges = u_iter.it_->second;
-  for (auto it = u_edges.begin(); it != u_edges.end(); ++it) {
-    if (*it == e) {
-      u_edges.erase(it);
+  for (auto edge_iter = edges_begin(u_iter); edge_iter != edges_end(u_iter);
+       ++edge_iter) {
+    if (*edge_iter == e) {
+      u_iter.it_->second.erase(edge_iter.it_);
       break;
     }
   }
 
   if (!is_directed_) {
     auto v_iter = get_iterator(v);
-    auto &v_edges = v_iter.it_->second;
-    for (auto it = v_edges.begin(); it != v_edges.end(); ++it) {
-      if (*it == e) {
-        v_edges.erase(it);
+    for (auto edge_iter = edges_begin(v_iter); edge_iter != edges_end(v_iter);
+         ++edge_iter) {
+      if (*edge_iter == e) {
+        v_iter.it_->second.erase(edge_iter.it_);
         break;
       }
     }
   }
-
   //
   assert(!is_adjacent(u, v));
   assert(num_edges() == (old_num_edges - 1));
@@ -335,53 +340,32 @@ template <class T, class E>
 std::ostream &Graph<T, E>::fold(std::ostream &out) const {
   // TODO
   // Remember: to fold and edge we use item().key() to fold the edge's ends.
-  // Primero indicar si el grafo es dirigido o no
-  out << is_directed_ << std::endl;
 
-  // Luego el número de vértices
+  out << (is_directed_ ? "DIRECTED" : "UNDIRECTED") << std::endl;
   out << num_vertices() << std::endl;
 
-  // Después los datos de cada vértice
-  for (auto it = vertices_.begin(); it != vertices_.end(); ++it) {
-    out << it->first->item().key() << std::endl;
+  // Imprime los datos completos de cada vértice, no solo la clave
+  for (auto iter = vertices_begin(); iter != vertices_end(); ++iter) {
+    out << (*iter)->item()
+        << std::endl; // Aquí se asume que operator<< para T está definido
   }
 
-  // Calcular el número de aristas a escribir
-  size_t n_edges = num_edges();
-  out << n_edges << std::endl;
+  out << num_edges() << std::endl;
 
-  // Finalmente, escribir cada arista
-  // En un grafo no dirigido, solo escribimos cada arista una vez
-  std::vector<EdgeRef> written_edges;
+  // Imprime las aristas
+  for (auto iter = vertices_begin(); iter != vertices_end(); ++iter) {
+    VertexRef u = *iter;
+    for (auto edge_iter = edges_begin(iter); edge_iter != edges_end(iter);
+         ++edge_iter) {
+      VertexRef v = (*edge_iter)->other(u);
 
-  for (auto it = vertices_.begin(); it != vertices_.end(); ++it) {
-    for (auto e_it = it->second.begin(); e_it != it->second.end(); ++e_it) {
-      EdgeRef e = *e_it;
-
-      // En un grafo no dirigido, verificar que no hayamos escrito ya esta
-      // arista
-      if (!is_directed_) {
-        bool already_written = false;
-        for (auto &we : written_edges) {
-          if ((we->first() == e->first() && we->second() == e->second()) ||
-              (we->first() == e->second() && we->second() == e->first())) {
-            already_written = true;
-            break;
-          }
-        }
-        if (already_written)
-          continue;
-        written_edges.push_back(e);
-      }
-
-      // Solo escribir aristas donde el primer vértice es el actual
-      // (para evitar duplicados en grafos no dirigidos)
-      if (is_directed_ || e->first() == it->first) {
-        out << e->first()->item().key() << " " << e->second()->item().key()
-            << " " << e->item() << std::endl;
+      if (is_directed_ || u->label() < v->label()) {
+        out << u->item().key() << " " << v->item().key() << " "
+            << (*edge_iter)->item() << std::endl;
       }
     }
   }
+
   //
   return out;
 }
@@ -389,8 +373,7 @@ std::ostream &Graph<T, E>::fold(std::ostream &out) const {
 template <class T, class E>
 Graph<T, E>::Graph(std::istream &in) noexcept(false) {
   // TODO
-  // Remember: Throw std::runtime_error("Wrong graph") when detecting a
-  // wrong
+  // Remember: Throw std::runtime_error("Wrong graph") when detecting a wrong
   //           input format.
   // Remember: key_t type is used to unfold the edge's ends.
 
@@ -401,18 +384,36 @@ Graph<T, E>::Graph(std::istream &in) noexcept(false) {
 
   // TODO
   // First: is it directed or undirected?
+  std::string graph_type;
+  bool directed;
+  if (!(in >> graph_type))
+    throw std::runtime_error("Wrong graph");
 
+  if (graph_type == "DIRECTED") {
+    is_directed_ = true;
+  } else if (graph_type == "UNDIRECTED") {
+    is_directed_ = false;
+  } else {
+    throw std::runtime_error("Wrong graph");
+  }
   //
 
   size_t size = 0;
   // TODO
-  // Second: get the number of vertices and create a Graph with this
-  // capacity.
-
+  // Second: get the number of vertices and create a Graph with this capacity.
+  if (!(in >> size))
+    throw std::runtime_error("Wrong graph");
   //
 
   // TODO
   // Third: load the N data items and add a vertex for each one.
+  for (size_t i = 0; i < size; ++i) {
+    T data;
+    if (!(in >> data))
+      throw std::runtime_error("Wrong graph");
+
+    add_vertex(data);
+  }
 
   //
 
@@ -420,15 +421,28 @@ Graph<T, E>::Graph(std::istream &in) noexcept(false) {
 
   // TODO
   // Fourth: load the number of edges.
-
+  if (!(in >> n_edges))
+    throw std::runtime_error("Wrong graph");
   //
 
   // TODO
   // Fifth: load the N edges.
   // Remember: Use T::key_t type to unfold the edge's end keys.
-  // Hint: use find_vertex(T::key_t) to get a reference to the vertex with
-  // that key.
+  // Hint: use find_vertex(T::key_t) to get a reference to the vertex with that
+  // key.
 
+  for (size_t i = 0; i < n_edges; ++i) {
+    typename T::key_t key_from, key_to;
+    E edge_data;
+
+    if (!(in >> key_from >> key_to >> edge_data))
+      throw std::runtime_error("Wrong graph");
+
+    auto v_from = find_vertex(key_from);
+    auto v_to = find_vertex(key_to);
+
+    add_edge(v_from, v_to, edge_data);
+  }
   //
 }
 
@@ -448,6 +462,13 @@ Graph<T, E>::find_first(typename T::key_t const &value) const {
   auto iter = vertices_begin();
   // TODO
 
+  while (iter != vertices_end()) {
+    if ((*iter)->item().key() == value) {
+      break;
+    }
+    ++iter;
+  }
+
   //
   assert(iter == vertices_end() || (*iter)->item().key() == value);
   return iter;
@@ -458,6 +479,13 @@ VertexIterator<T, E> Graph<T, E>::get_iterator(const VertexRef &v) const {
   assert(has(v));
   auto iter = vertices_begin();
   // TODO
+
+  while (iter != vertices_end()) {
+    if (*iter == v) {
+      break;
+    }
+    ++iter;
+  }
 
   //
   assert((*iter) == v);
@@ -472,6 +500,8 @@ void Graph<T, E>::remove_vertex(const VertexIterator<T, E> &iter) {
 #endif
   // TODO
   // Hint: use remove_vertex(const VertexRef &v) method.
+
+  remove_vertex(*iter);
 
   //
   assert(!has(*iter));
@@ -496,6 +526,13 @@ Graph<T, E>::find_first(VertexIterator<T, E> u_iter,
   auto edge_iter = edges_begin(u_iter);
   // TODO
 
+  while (edge_iter != edges_end(u_iter)) {
+    if ((*edge_iter)->other(*u_iter)->item().key() == value) {
+      break;
+    }
+    ++edge_iter;
+  }
+
   //
   assert(edge_iter == edges_end(u_iter) || (*edge_iter)->has(*u_iter));
   assert(edge_iter == edges_end(u_iter) ||
@@ -510,6 +547,10 @@ get_vertices(const Graph<T, E> &g) {
   // TODO
   // Hint: use a VertexIterator to traverse the graph's vertices.
 
+  for (auto iter = g.vertices_begin(); iter != g.vertices_end(); ++iter) {
+    vs.push_back(*iter);
+  }
+
   //
   return vs;
 }
@@ -518,10 +559,22 @@ template <class T, class E>
 std::vector<typename Graph<T, E>::EdgeRef> get_edges(const Graph<T, E> &g) {
   std::vector<typename Graph<T, E>::EdgeRef> es;
   // TODO
-  // Hint: use VertexIterator and EdgeIterator iterators to traverse the
-  // graph. Remember: if the graph is undirected, the edge (u,v) was
-  // duplicated as (v, u) into the incident list of u and v but we only want
-  // one copy in the returned vector.
+  // Hint: use VertexIterator and EdgeIterator iterators to traverse the graph.
+  // Remember: if the graph is undirected, the edge (u,v) was duplicated as (v,
+  // u) into the incident list of u and v but we only want one copy in the
+  // returned vector.
+
+  for (auto v_iter = g.vertices_begin(); v_iter != g.vertices_end(); ++v_iter) {
+    auto u = *v_iter;
+    for (auto e_iter = g.edges_begin(v_iter); e_iter != g.edges_end(v_iter);
+         ++e_iter) {
+      auto e = *e_iter;
+      // En grafos no dirigidos, solo incluir cada arista una vez
+      if (g.is_directed() || e->first() == u) {
+        es.push_back(e);
+      }
+    }
+  }
 
   //
   return es;

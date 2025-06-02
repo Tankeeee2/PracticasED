@@ -13,12 +13,9 @@
 #include <edge.hpp>
 
 template <class T, class E>
-Edge<T, E>::Edge(VertexRef const &u, VertexRef const &v, E const &data) {
-  // TODO
-  u_ = u;
-  v_ = v;
-  item_ = data;
-  is_visited_ = false;
+Edge<T, E>::Edge(VertexRef const &u, VertexRef const &v, E const &data)
+    : u_(u), v_(v), item_(data), is_visited_(false) // TODO
+{
   //
   assert(has(u));
   assert(has(v));
@@ -40,20 +37,24 @@ template <class T, class E> Edge<T, E>::~Edge() {}
 
 template <class T, class E> bool Edge<T, E>::is_visited() const {
   // TODO: fixme
+
   return is_visited_;
+
   //
 }
 
 template <class T, class E> E const &Edge<T, E>::item() const {
   // TODO: fixme
+
   return item_;
+
   //
 }
 
 template <class T, class E> bool Edge<T, E>::has(VertexRef const &n) const {
   // TODO: fixme
 
-  return (n == u_ || n == v_);
+  return u_ == n || v_ == n;
 
   //
 }
@@ -127,7 +128,9 @@ template <class T, class E> void Edge<T, E>::set_visited(bool new_st) {
 
 template <class T, class E> void Edge<T, E>::set_item(E const &v) {
   // TODO
+
   item_ = v;
+
   //
   assert(item() == v);
 }
